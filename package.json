@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./server/bin/www",
-    "dev": "DEBUG=proyectodwpii:server node --watch ./server/bin/www"
+    "dev": "DEBUG=proyectodwpii:server && babel-watch ./server/bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -13,5 +13,13 @@
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.15",
+    "@babel/core": "^7.22.17",
+    "@babel/node": "^7.22.15",
+    "@babel/preset-env": "^7.22.15",
+    "babel-watch": "^7.8.1",
+    "core-js": "^3.32.2"
   }
 }
