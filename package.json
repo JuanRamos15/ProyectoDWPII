@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./server/bin/www",
-    "dev": "DEBUG=proyectodwpii:server && babel-watch ./server/bin/www"
+    "dev": "DEBUG=proyectodwpii:server && babel-watch ./server/bin/www",
+    "build": "npm run clean && babel ./server --out-dir dist --copy-files",
+    "clean": "rm -rf ./dist"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -12,7 +14,9 @@
     "express": "~4.16.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "webpack-dev-middleware": "^6.0.2",
+    "webpack-hot-middleware": "^2.25.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
@@ -20,6 +24,9 @@
     "@babel/node": "^7.22.15",
     "@babel/preset-env": "^7.22.15",
     "babel-watch": "^7.8.1",
-    "core-js": "^3.32.2"
+    "core-js": "^3.32.2",
+    "webpack": "^5.76.1",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
   }
 }
