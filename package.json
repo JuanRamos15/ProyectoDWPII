@@ -5,8 +5,14 @@
   "scripts": {
     "start": "node ./server/bin/www",
     "dev": "DEBUG=proyectodwpii:server && babel-watch ./server/bin/www",
-    "build": "npm run clean && babel ./server --out-dir dist --copy-files",
-    "clean": "rm -rf ./dist"
+    "devc": "NODE_ENV=development && webpack serve --config ./webpack.dev.config.js --mode development",
+    "devb": "babel-watch ./server/bin/www",
+    "cleans": "rm -rf ./dist",
+    "cleanc": "rm -f ./public/bundle.js",
+    "b:s": "npm run cleans && babel ./server --out-dir dist --copy-files",
+    "b:c": "npm run cleanc && webpack --config ./webpack.config.js --mode production",
+    "itgam": "ls",
+    "build": "npm run clean && babel ./server --out-dir dist --copy-files"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
