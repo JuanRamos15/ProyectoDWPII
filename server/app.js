@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //crea un srvidor de archivos estaticos
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname,'..','public')));
 //registro de middleware de aplicacion
 app.use('/', indexRouter);
 //activa usersRouter cunado se solicta el recurso raiz users
