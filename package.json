@@ -5,10 +5,10 @@
   "scripts": {
     "start": "node ./server/bin/www",
     "dev": "DEBUG=proyectodwpii:server && babel-watch ./server/bin/www",
-    "devc": "NODE_ENV=development webpack serve --config ./.webpack.dev.config.js --mode development",
+    "devc": "NODE_ENV=development webpack serve --config ./webpack.dev.config.js --mode development",
     "build": "npm run buildc && npm run builds",
     "builds": "npm run clean && babel ./server --out-dir dist --copy-files",
-    "buildc": "npm run cleanc && webpack --config ./.webpack.config.js --mode production",
+    "buildc": "npm run cleanc && webpack --config ./webpack.config.js --mode production",
     "clean": "rm -rf ./dist",
     "cleanc": "rm -f ./public/bundle.js ./public/styles/app.css"
   },

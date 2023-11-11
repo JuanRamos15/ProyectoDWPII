@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('proyectodwpii:server');
+var debug = require('debug')('dwpc2:server');
 var http = require('http');
 
 /**

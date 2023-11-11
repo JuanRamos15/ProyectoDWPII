@@ -1,13 +1,14 @@
-// Notas importanes
-// El archivo de configuración debe usar ES5
+// Important notes
+// 🚨 Configuration file must use ES5 not ES6
+// that's why you will see "requires" not "imports"
 
-// Importar un administrador de rutas de archivos
-const path = require("path");
-
-//Importing Mini CSS
+// Importing an file routing manager
+const path = require('path');
+// Importing plugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// Exportamos un objeto de configuración
-// que sera usado por webpack
+
+// We export a configuration object
+// that will be used by webpack
 module.exports = {
   // 1. The entry file from which
   // it will contain all the definitions to package
@@ -62,4 +63,16 @@ module.exports = {
     filename: 'styles/app.css'
   })]
 }
-
+    
+    /*
+    //3. servidor de desarollo
+    devServer: {
+        //3.1 Folder de estaticos
+        static: path.join(__dirname,'public'),
+        //3.2 puerto de servidor de desarollo
+        port: 8080,
+        //3.3 definiendo el host
+        host: '0.0.0.0'
+    }
+}
+*/
