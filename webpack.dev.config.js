@@ -2,6 +2,8 @@
 // El archivo de configuración debe usar ES5
 // Importar un administrador de rutas de archivos
 const path = require("path");
+//Importing Mini CSS
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // Exportamos un objeto de configuración
 // que sera usado por webpack
 module.exports = {
@@ -47,7 +49,14 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader,'css-loader']
       }
     ]
-  }
+  },
+  plugins: [new MiniCssExtractPlugin({
+    filename: 'styles/app.css'
+  })]
 }
