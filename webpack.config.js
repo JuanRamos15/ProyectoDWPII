@@ -9,29 +9,28 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // Exportamos un objeto de configuración
 // que sera usado por webpack
 module.exports = {
-  // 1. El archivo de entrada o indexador
+  // 1. The entry file from which
+  // it will contain all the definitions to package
   entry: "./client/index.js",
-  // 2. Especificar el archivo de salida
+  // 2. Specify the output file
+  // Here it is detailed where the file will be
+  // final packaged.
   output: {
-    // 2.1 Ruta absoluta de salida
+    // 2.1 Absolute output path
+    // Note that it is being placed in the directory
+    // of the project's static files
     path: path.resolve(__dirname, "public"),
-    // 2.2 Nombre del archivo de salida
-    filename: "bundle.js",
+    // 2.2 Output file name
+    filename: "bundle.js"
   },
-  // 3. Configurando el servidor de desarrollo
-  devServer: {
-    // 3.1 Folder de archivos estáticos
-    static: path.join(__dirname, "public"),
-    // 3.2 Puerto del servidor de desarrollo
-    port: 8080,
-    // 3.3 Definiendo el host
-    host: "0.0.0.0",
-  },
-  // Agregando un modulo a webpack
+  // Adding a module to webpack
   module: {
     rules: [
       {
+				// This section stablishes 
+				// what rules to apply to ".js" files
         test: /\.js$/,
+				// We Dont want to transpile any kind of modules
         exclude: /(node_modules|bower_components)/,
         use: [
           {
@@ -54,11 +53,13 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader,'css-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
       }
     ]
   },
   plugins: [new MiniCssExtractPlugin({
+    // Archivo css de salida
     filename: 'styles/app.css'
   })]
 }
+

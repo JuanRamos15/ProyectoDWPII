@@ -8,7 +8,7 @@
     "devc": "NODE_ENV=development && webpack serve --config ./webpack.dev.config.js --mode development",
     "devb": "babel-watch ./server/bin/www",
     "cleans": "rm -rf ./dist",
-    "cleanc": "rm -f ./public/bundle.js",
+    "cleanc": "rm -f ./public/bundle.js ./public/styles/app.css",
     "b:s": "npm run cleans && babel ./server --out-dir dist --copy-files",
     "b:c": "npm run cleanc && webpack --config ./webpack.config.js --mode production",
     "itgam": "ls",
