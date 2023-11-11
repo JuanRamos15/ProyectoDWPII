@@ -22,7 +22,10 @@
     "express": "~4.16.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "webpack": "^5.88.2",
+    "webpack-dev-middleware": "^6.1.1",
+    "webpack-hot-middleware": "^2.25.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
@@ -37,10 +40,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.0",
     "mini-css-extract-plugin": "^2.7.6",
-    "webpack": "^5.76.1",
     "webpack-cli": "^5.0.1",
-    "webpack-dev-middleware": "^6.1.1",
-    "webpack-dev-server": "^4.11.1",
-    "webpack-hot-middleware": "^2.25.4"
+    "webpack-dev-server": "^4.11.1"
   }
 }
