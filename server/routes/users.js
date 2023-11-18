@@ -1,17 +1,14 @@
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
 // GET /users
-router.get('/', (res) => {
-  res.send('Response with a resource');
+router.get('/', (req, res) => {
+  res.send('respond with a resource');
 });
-
-// Para que se ejecute se debe de entar a un get de /users y despues a /author
+// para que se ejecute se debe de entar a un get de /users y despues a /author
 router.get('/author', (_, res) => {
-  res.render('author', {
-    author: 'Juan y David',
-  });
+  res.render('author', { author: 'Ramos de la Torre Juan' });
 });
 
-module.exports = router;
+export default router;

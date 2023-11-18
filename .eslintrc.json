@@ -1,5 +1,5 @@
 {
-    "parser": "@babel/eslint-parser",
+    "parser":"@babel/eslint-parser",
     "env": {
         "browser": true,
         "es2021": true,
@@ -13,6 +13,6 @@
     },
     "rules": {
         "no-console":"off",
-        "prettier/prettier": ["error"]
+        "prettier/prettier":["error"]
     }
 }

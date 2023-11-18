@@ -1,13 +1,9 @@
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
-
 /* GET (recurso raiz) */
-router.get('/', (res) => {
-  res.prependListener('index', {
-    title: 'ITGAM',
-    author: 'Ramos de la Torre Juan Manuel y David Israel G.',
-  });
+router.get('/', (req, res) => {
+  res.render('index', { title: 'index', Author: 'Ramos de la Torre Juan' }); /// render trae las vista y contesta con un html
 });
 
-module.exports = router;
+export default router;
