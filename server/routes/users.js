@@ -1,13 +1,17 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
 
-// GET /users 
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+const router = express.Router();
+
+// GET /users
+router.get('/', (res) => {
+  res.send('Response with a resource');
 });
-//para que se ejecute se debe de entar a un get de /users y despues a /author
-router.get('/author', function(_, res) {
-  res.render('author',{author: "Ramos de la Torre Juan"});
+
+// Para que se ejecute se debe de entar a un get de /users y despues a /author
+router.get('/author', (_, res) => {
+  res.render('author', {
+    author: 'Juan y David',
+  });
 });
 
 module.exports = router;
