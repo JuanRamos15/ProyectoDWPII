@@ -14,5 +14,8 @@
     "rules": {
         "no-console":"off",
         "prettier/prettier":["error"]
+    },
+    "globals": {
+        "__rootdir": "readonly"
     }
 }

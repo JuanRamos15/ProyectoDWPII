@@ -6,8 +6,7 @@
 
 import http from 'http';
 import app from '../app';
-
-const debug = require('debug')('proyectodwpii:server');
+import log from '../config/winston';
 
 /**
  * Normalize a port into a number, string, or false.
@@ -56,11 +55,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
+      log.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
+      log.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -74,8 +73,7 @@ function onError(error) {
 
 function onListening() {
   const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  debug(`📣Listening on ${bind}`);
+  log.info(`📣Listening on ${process.env.APP_URL}:${addr.port}`);
 }
 /**
  * Listen on provided port, on all network interfaces.

@@ -9,23 +9,25 @@
     "devc": "NODE_ENV=development webpack serve --config ./webpack.dev.config.js --mode development",
     "cleans": "rm -rf ./dist",
     "cleanc": "rm -f ./public/bundle.js ./public/styles/app.css",
+    "clean": "rm -rf ./server/logs/*.log",
     "b:c": "npm run cleanc && webpack --config ./webpack.config.js --mode production",
     "build": "npm run b:c && npm run b:s"
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.22.15",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-webpack-plugin": "^4.0.1",
     "express": "~4.16.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "webpack": "^5.76.1",
     "webpack-dev-middleware": "^6.1.1",
     "webpack-hot-middleware": "^2.25.4",
-    "webpack": "^5.76.1",
-    "@babel/eslint-parser": "^7.22.15",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-webpack-plugin": "^4.0.1"
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
