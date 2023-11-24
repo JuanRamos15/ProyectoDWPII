@@ -67,9 +67,10 @@ if (nodeEnviroment === 'development') {
 // Configuring the template engine
 configTemplateEngine(app);
 // Databases connection Checker Middleware
-app.use((req, res) => {
+app.use((req, res, next) => {
   if (mongoose.connection.readyState === 1) {
     log.info('Verficacion de base de datos exitosa');
+    next();
   } else {
     log.info('Verficacion de base de datos no exitosa');
     res.status(503).render('errors/e503View', { layout: 'errors' });
