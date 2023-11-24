@@ -1,0 +1,31 @@
+{{#if successMessage}}
+  <script>
+    document.querySelector('script[src="/bundle.js"]').onload = ()=>{
+      M.toast({
+        html: "<i class='material-icons'>done</i> {{ successMessage }}", 
+        classes: 'card-panel green accent-4 white-text',
+        displayLength: 2000 })
+    }
+  </script>
+{{/if}}
+{{#if infoMessage}}
+  <script>
+    document.querySelector('script[src="/bundle.js"]').onload = ()=>{
+      M.toast({html: '{{infoMessage}}', classes: 'info', displayLength: 2000 })
+    }
+  </script>
+{{/if}}
+{{#if errorMessage}}
+  <script>
+    document.querySelector('script[src="/bundle.js"]').onload = ()=>{
+      M.toast({html: '{{errorMessage}}', classes: 'error', displayLength: 2000})
+    }
+  </script>
+{{/if}}
+{{#if passportError}}
+  <script>
+    document.querySelector('script[src="/bundle.js"]').onload = ()=>{
+      M.toast({html: '{{passportError}}', classes: 'error', displayLength: 2000})
+    }
+  </script>
+{{/if}}

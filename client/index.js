@@ -13,7 +13,7 @@ import deleteProject from './domains/project.dashboard';
 // inicia scripts de materialize para interactividad
 M.AutoInit();
 // Cargando script en caso de que la URL sea '/project/dashboard'
-if (window.location.pathname === '/project/projects') {
+if (window.location.pathname === '/project/showDashboard') {
   window.deleteProject = deleteProject;
 }
 console.log('🎉Estilos cargado Correctamente🎉');
