@@ -11,31 +11,29 @@
                 <div class="card-content">
                     <div class="input-field">
                         <label for="project-name">
-                            
+                            Nombre del Proyecto
                         </label>
-                        <div class='input-field'>
-                            <label for='project-name'></label>
-                            <input placeholder='El nombre del proyecto aqui 👇' id='project-name' name='name'
-                                type='text' class="validate" value="{{ project.name }}" />
-                            {{#if errorModel.name }}
-                            <span style="color: crimson;">Error: {{ errorModel.name }}</span>
-                            {{/if}}
-                        </div>
-
-                        <div class='input-field'>
-                            <label for='project-description'>Descripción del proyecto</label>
-                            <textarea id='project-description' name='description' class="materialize-textarea"
-                                required>{{project.description}}</textarea>
-                            {{#if errorModel.description }}
-                            <span style="color: crimson;">Error: {{ errorModel.description }}</span>
-                            {{/if}}
-                        </div>
+                        <input type="text"
+                        id="project-name"
+                        name="name"
+                        placeholder="Ingrese el nombre del proyecto"
+                        
+                        class="validate">
                     </div>
-                    <div class="card-action">
-                        <button class="blue darken-3 waves-effect waves-light btn">
-                            <i class="material-icons left">note_add</i> Agregar
-                        </button>
+                    <div class="input-field">
+                        <label for="project-description">
+                            Descripcion del Proyecto
+                        </label>
+                        <textarea name="description" 
+                        id="project-description" 
+                        class="materialize-textarea" required></textarea>
                     </div>
+                </div>
+                <div class="card-action">
+                    <button class="blue darken-3 waves-effect waves-light btn">
+                       <i class="material-icons left">note_add</i> Agregar
+                    </button>
+                </div>
             </form>
         </div>
     </div>
