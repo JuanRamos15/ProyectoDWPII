@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{title}}</title>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/png">
-    <link rel='stylesheet' href='/styles/app.css' />
-    <script src="/bundle.js" defer></script>
-  </head>
-  <body>
-       <nav>
-      <div class="container">
-        <div class="nav-wrapper">
-          <a href="#" class="brand-logo">LOGO</a>
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="#">Oper 1</a></li>
-            <li><a href="#">Oper 2</a></li>
-            <li><a href="#">Oper 3</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <div class="container">
-      {{{body}}}
-    </div>
-  </body>
+
+<head>
+  <title>{{title}}</title>
+  <link rel="shortcut icon" href="/favicon.png" type="image/png">
+  <link rel='stylesheet' href='/styles/app.css' />
+  <script src="/bundle.js" defer></script>
+</head>
+
+<body>
+  {{!-- Llamando a la vista parcial de la barra de navegacion --}}
+  {{> _navbar }}
+  <div class="container">
+    {{{body}}}
+  </div>
+</body>
+
 </html>
