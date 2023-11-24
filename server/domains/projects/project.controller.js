@@ -3,11 +3,11 @@
 
 // get 'project/projects'
 const showDashboard = (req, res) => {
-  res.send('🚧UNDER CONSTRUCTION GET ´/project/projects´ 🚧');
+  res.render('project/addView');
 };
 // get 'project/add'
 const addForm = (req, res) => {
-  res.send('🚧UNDER CONSTRUCTION GET ´/projects/add´ 🚧');
+  res.render('project/addView');
 };
 
 // Controlador Home

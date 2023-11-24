@@ -16,6 +16,11 @@ h1{
   justify-content: center;
   text-align: center;
 }
+.card-title.add-project{
+  color: #fff;
+  text-shadow: 2px 2px rgba(0, 0, 0, 6);
+  font: 24px;
+}
 
 #brand-logo-img img {
   margin-right: 10px; /* Add some space between the image and text if desired */
