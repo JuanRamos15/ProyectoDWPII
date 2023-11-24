@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 
 // Setting Webpack Modules
 import webpack from 'webpack';
@@ -65,6 +66,15 @@ if (nodeEnviroment === 'development') {
 
 // Configuring the template engine
 configTemplateEngine(app);
+// Databases connection Checker Middleware
+app.use((req, res) => {
+  if (mongoose.connection.readyState === 1) {
+    log.info('Verficacion de base de datos exitosa');
+  } else {
+    log.info('Verficacion de base de datos no exitosa');
+    res.status(503).render('errors/e503View', { layout: 'errors' });
+  }
+});
 
 // Se establecen los middlewares
 app.use(morgan('dev', { stream: log.stream }));
