@@ -9,6 +9,10 @@ import morgan from 'morgan';
 import webpack from 'webpack';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
+
+// Importando el template engine
+import configTemplateEngine from './config/templateEngine';
+
 // Importando logger
 import log from './config/winston';
 
@@ -61,8 +65,7 @@ if (nodeEnviroment === 'development') {
 }
 
 // Configurando el motor de plantillas
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+configTemplateEngine(app);
 
 // Conexion de Winston con Morgan
 app.use(morgan('dev', { stream: log.stream }));

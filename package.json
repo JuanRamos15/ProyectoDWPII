@@ -21,6 +21,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-webpack-plugin": "^4.0.1",
     "express": "~4.16.1",
+    "express-handlebars": "^7.1.2",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "materialize-css": "^1.0.0-rc.2",
