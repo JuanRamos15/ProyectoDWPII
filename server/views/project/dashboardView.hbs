@@ -1,0 +1,19 @@
+<h1>Listado de Proyectos</h1>
+<div class="row">
+  {{#each projects}}
+    <div class="col s12">
+      <div class="card teal darken-4">
+        <div class="card-content teal-text text-lighten-5">
+          <span class="card-title">{{name}}</span>
+          <p>{{description}}</p>
+        </div>
+        <div class="card-action">
+          <a href="#">This is a link</a>
+          <a href="#">This is a link</a>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <p>No hay proyectos que listar.</p>
+  {{/each}}
+</div>
