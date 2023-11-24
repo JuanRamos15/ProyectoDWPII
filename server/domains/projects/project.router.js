@@ -16,4 +16,6 @@ router.get('/dashboard', projectController.showDashboard);
 router.get('/add-form', projectController.addForm);
 // GET /project/add
 router.get('/add', projectController.addForm);
+// POST "/project/add"
+router.post('/add', projectController.addPost);
 export default router;
