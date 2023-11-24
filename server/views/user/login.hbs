@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="card-panel teal lighten-5 col s8 offset-s2">
+    <div class="row center">
+      <img class="logo" src="/images/project.jpg" alt="project logo" />
+    </div>
+    <div class="row">
+      <h4 class="center-align">Log In</h4>
+    </div>
+    <div class="row">
+      <form action="/user/login" method="POST" class="col s12">
+        <div class="row">
+          <div class="input-field col s12">
+            <input placeholder="username" id="email" name="mail" type="email" class="validate" />
+            <label for="email">Email</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="password" type="password" class="validate" name="password" />
+            <label for="password">Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s10">
+            <button class="waves-effect waves-light btn">
+              <i class="material-icons left">send</i>log in
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
