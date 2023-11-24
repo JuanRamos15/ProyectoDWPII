@@ -4,7 +4,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
-
+// Enable post and delete verbs
+import methodOverride from 'method-override';
 // Setting Webpack Modules
 import webpack from 'webpack';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
@@ -82,6 +83,8 @@ app.use(morgan('dev', { stream: log.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// Enable post and delete verbs
+app.use(methodOverride('_method'));
 // Crea un server de archivos estaticos
 app.use(express.static(path.join(__dirname, '..', 'public')));
 

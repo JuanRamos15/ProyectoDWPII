@@ -1,4 +1,4 @@
-<h1>Listado de Proyectos</h1>
+<h1>Listado de proyectos</h1>
 <div class="row">
   {{#each projects}}
     <div class="col s12">
@@ -8,8 +8,17 @@
           <p>{{description}}</p>
         </div>
         <div class="card-action">
-          <a href="#">This is a link</a>
-          <a href="#">This is a link</a>
+					<a href="/project/edit/{{_id}}">
+            <i class="material-icons" 
+              style = "display: inline-flex; vertical-align: sub;">edit</i>
+            <span >Editar Proyecto</span>
+          </a>
+          <a href="#" class="inline">
+            <i class="material-icons" 
+	            style = "display: inline-flex; vertical-align: sub;">
+	            delete</i>
+            Borrar Proyecto
+          </a>
         </div>
       </div>
     </div>
