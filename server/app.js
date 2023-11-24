@@ -1,32 +1,31 @@
 // Cargando dependencias
-import createError from 'http-errors';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
-// var debug = require('debug')('dwpcii:server');
+// Setting Webpack Modules
 import webpack from 'webpack';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
 
-// Importando el template engine
+// Importing template-engine
 import configTemplateEngine from './config/templateEngine';
 
-// Importando logger
-import log from './config/winston';
-
-import debug from './services/debugLogger';
-import indexRouter from './routes/index';
-import usersRouter from './routes/users';
-
-// Setting Webpack Modules
 // Importing webpack configuration
 import webpackConfig from '../webpack.dev.config';
 
-// Creating root var
+// Impornting winston logger
+import log from './config/winston';
+
+// Importing Router
+import router from './router';
+
+import debug from './services/debugLogger';
+
+// Creando variable del directorio raiz
 // eslint-disable-next-line
-global["__rootdir"] = path.resolve(process.cwd());
+global['__rootdir'] = path.resolve(process.cwd());
 
 // Creando la instancia de express
 const app = express();
@@ -47,8 +46,8 @@ if (nodeEnviroment === 'development') {
     'webpack-hot-middleware/client?reload=true&timeout=1000',
     webpackConfig.entry,
   ];
-
-  // Agregar el plugin a la configuración de desarrollo de webpack
+  // Agregar el plugin a la configuración de desarrollo
+  // de webpack
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
   // Creating the bundler
   const bundle = webpack(webpackConfig);
@@ -64,43 +63,18 @@ if (nodeEnviroment === 'development') {
   console.log('🏭 Ejecutando en modo producción 🏭');
 }
 
-// Configurando el motor de plantillas
+// Configuring the template engine
 configTemplateEngine(app);
 
-// Conexion de Winston con Morgan
-app.use(morgan('dev', { stream: log.stream }));
 // Se establecen los middlewares
-// app.use(logger('dev'));
+app.use(morgan('dev', { stream: log.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // Crea un server de archivos estaticos
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Registro de Middlewares de aplicación
-app.use('/', indexRouter);
-// Activa "usersRourter" cuando se
-// solicita "/users"
-app.use('/users', usersRouter);
-// app.use('/author', (req, res)=>{
-//   res.json({mainDeveloper: "Ramos Juan"})
-// });
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  log.info(`404 Pagina no encontrada ${req.method} ${req.originalUrl}`);
-  next(createError(404));
-});
-
-// error handler
-app.use((err, req, res) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  // render the error page
-  res.status(err.status || 500);
-  log.error(`${err.status || 500} - ${err.message}`);
-  res.render('error');
-});
+// Registro de Rutas
+router.addRoutes(app);
 
 export default app;
