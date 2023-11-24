@@ -19,6 +19,7 @@
     "debug": "~2.6.9",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "mongoose": "^7.6.3",
     "eslint-webpack-plugin": "^4.0.1",
     "express": "~4.16.1",
     "express-handlebars": "^7.1.2",

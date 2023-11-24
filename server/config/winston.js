@@ -3,7 +3,7 @@ import winston, { format } from 'winston';
 import path from 'path';
 
 // Se desestructura funciones para realizar la composicion del formato
-const { combine, timestamp, label, printf, colorize } = format;
+const { combine, timestamp, label, printf, colorize, prettyPrint } = format;
 
 // Creando variable del directorio raiz
 // eslint-disable-next-line
@@ -42,7 +42,7 @@ const myFileFormat = combine(
   // Agregando la fecha
   timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
   // Establenciendo la salida en formato JSON
-  format.json()
+  prettyPrint()
 );
 
 // Creando el objeto de opciones para cada tipo de transporte

@@ -12,6 +12,9 @@ import log from '../config/winston';
 // importando llaves de configuracion
 import configKeys from '../config/configKeys';
 
+// iMPORTANDO LA DB CONNECTION FUNCTION
+import connectWithRetry from '../database/mongooseConnection';
+
 // const debug = require("debug")("dwpcii1:server");
 
 /**
@@ -84,6 +87,8 @@ function onListening() {
   const addr = server.address();
   log.info(`⭐⭐ Listening on ${process.env.APP_URL}:${addr.port} ⭐⭐`);
 }
+// lanzando db connection
+connectWithRetry(configKeys.MONGO_URL);
 /**
  * Listen on provided port, on all network interfaces.
  */
