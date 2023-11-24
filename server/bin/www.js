@@ -6,7 +6,13 @@
 
 import http from 'http';
 import app from '../app';
+// Importing winston logger
 import log from '../config/winston';
+
+// importando llaves de configuracion
+import configKeys from '../config/configKeys';
+
+// const debug = require("debug")("dwpcii1:server");
 
 /**
  * Normalize a port into a number, string, or false.
@@ -32,13 +38,14 @@ function normalizePort(val) {
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(configKeys.PORT);
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
+log.info('The server is created from the express instance');
 const server = http.createServer(app);
 
 /**
@@ -56,10 +63,12 @@ function onError(error) {
   switch (error.code) {
     case 'EACCES':
       log.error(`${bind} requires elevated privileges`);
+      console.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
       log.error(`${bind} is already in use`);
+      console.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -73,7 +82,7 @@ function onError(error) {
 
 function onListening() {
   const addr = server.address();
-  log.info(`📣Listening on ${process.env.APP_URL}:${addr.port}`);
+  log.info(`⭐⭐ Listening on ${process.env.APP_URL}:${addr.port} ⭐⭐`);
 }
 /**
  * Listen on provided port, on all network interfaces.
