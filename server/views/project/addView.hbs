@@ -2,40 +2,40 @@
     <div class="col s12 m10 offset-m1 18 offset-12">
         <div class="card">
             <div class="card-image">
-              <img src="/images/addproject.png" alt="Imagen de Creacion de proyecto">
-              <span 
-              class="card-title add-project"
-              style="font-weight: bolder;">
-                Crear Proyecto
+                <img src="/images/addproject.png" alt="Imagen de Creacion de proyecto">
+                <span class="card-title add-project" style="font-weight: bolder;">
+                    Crear Proyecto
                 </span>
             </div>
             <form autocomplete="off" action="/project/add" method="post">
                 <div class="card-content">
                     <div class="input-field">
                         <label for="project-name">
-                            Nombre del Proyecto
+                            
                         </label>
-                        <input type="text"
-                        id="project-name"
-                        name="name"
-                        placeholder="Ingrese el nombre del proyecto"
-                        
-                        class="validate">
+                        <div class='input-field'>
+                            <label for='project-name'></label>
+                            <input placeholder='El nombre del proyecto aqui 👇' id='project-name' name='name'
+                                type='text' class="validate" value="{{ project.name }}" />
+                            {{#if errorModel.name }}
+                            <span style="color: crimson;">Error: {{ errorModel.name }}</span>
+                            {{/if}}
+                        </div>
+
+                        <div class='input-field'>
+                            <label for='project-description'>Descripción del proyecto</label>
+                            <textarea id='project-description' name='description' class="materialize-textarea"
+                                required>{{project.description}}</textarea>
+                            {{#if errorModel.description }}
+                            <span style="color: crimson;">Error: {{ errorModel.description }}</span>
+                            {{/if}}
+                        </div>
                     </div>
-                    <div class="input-field">
-                        <label for="project-description">
-                            Descripcion del Proyecto
-                        </label>
-                        <textarea name="description" 
-                        id="project-description" 
-                        class="materialize-textarea" required></textarea>
+                    <div class="card-action">
+                        <button class="blue darken-3 waves-effect waves-light btn">
+                            <i class="material-icons left">note_add</i> Agregar
+                        </button>
                     </div>
-                </div>
-                <div class="card-action">
-                    <button class="blue darken-3 waves-effect waves-light btn">
-                       <i class="material-icons left">note_add</i> Agregar
-                    </button>
-                </div>
             </form>
         </div>
     </div>
