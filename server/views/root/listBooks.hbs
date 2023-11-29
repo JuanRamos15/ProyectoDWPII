@@ -1,0 +1,221 @@
+<!-- Dropdown for "Usuarios" -->
+<ul id="user-dropdown-menu" class="dropdown-content">
+  <li>
+    <a href="/root/modify">
+      <i class="large material-icons" style="margin: 2px;">person_add</i>
+      Modificar Usuario
+    </a>
+  </li>
+  <li>
+    <a href="/root/manage">
+      <i class="large material-icons" style="margin: 2px;">group</i>
+      Gestionar Usuarios
+    </a>
+  </li>
+  <li>
+    <a href="/root/login">
+      <i class="large material-icons" style="margin: 2px;">login</i>
+      Ingresar con otra cuenta
+    </a>
+  </li>
+  <li>
+    <a href="/user/logout">
+      <i class="large material-icons" style="margin: 2px;">logout</i>
+      Salir
+    </a>
+  </li>
+</ul>
+
+<ul id="actions-dropdown-menu" class="dropdown-content">
+  <li>
+    <a href="/root/addBook">
+      <i class="large material-icons" style="margin: 2px;">library_add</i>
+      Agregar libro
+    </a>
+  </li>
+  <li>
+    <a href="/root/listBooks">
+      <i class="large material-icons" style="margin: 2px;">library_books</i>
+      Listar libros
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/Penalties">
+      <i class="large material-icons" style="margin: 2px;">money_off</i>
+      Multas
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/loan">
+      <i class="large material-icons" style="margin: 2px;">book</i>
+      Préstamos
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/reserveBook">
+      <i class="large material-icons" style="margin: 2px;">event_note</i>
+      Reservar libro
+    </a>
+  </li>
+</ul>
+
+<!-- Inicia marcado de barra de navegación -->
+<nav class="blue darken-4">
+  <div class="container">
+    <div class="nav-wrapper">
+      <!-- Visulización de navegación en pantalla completa -->
+      <a href="/root/rootHome" class="brand-logo" style="margin-left: 50px;">
+        📚 BiblioTec
+      </a>
+      <ul id="nav" class="right hide-on-med-and-down">
+        <li>
+          <a href="/root/rootHome">
+            <i class="large material-icons right">
+              home
+            </i>
+            Inicio
+          </a>
+        </li>
+
+        <!-- Actions Dropdown -->
+        <li>
+          <a class="dropdown-trigger" href="#!" data-target="actions-dropdown-menu">
+            Acciones
+            <i class="material-icons right">
+              menu
+            </i>
+          </a>
+        </li>
+        <!-- User Dropdown -->
+        <li>
+          <a class="dropdown-trigger" href="#!" data-target="user-dropdown-menu">
+            Usuario
+            <i class="material-icons right">
+              people
+            </i>
+          </a>
+        </li>
+      </ul>
+<!-- Visualización de Navegación para móviles -->
+<a href="#" data-target="nav-mobile" class="sidenav-trigger">
+  <i class="material-icons">
+    menu
+  </i>
+</a>
+<ul id="nav-mobile" class="sidenav">
+  <li>
+    <a href="/root/rootHome">
+      <i class="large material-icons left">
+        home
+      </i>
+      Inicio
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/addBook">
+      <i class="large material-icons left">
+        library_add
+      </i>
+      Agregar libro
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/listBooks">
+      <i class="large material-icons left">
+        library_books
+      </i>
+      Listar libros
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/manage">
+      <i class="large material-icons left">
+        group
+      </i>
+      Gestionar Usuarios
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/Penalties">
+      <i class="large material-icons left">
+        money_off
+      </i>
+      Multas
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/loan">
+      <i class="large material-icons left">
+        book
+      </i>
+      Préstamos
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/reserveBook">
+      <i class="large material-icons left">
+        event_note
+      </i>
+      Reservar libro
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/root/logout">
+      <i class="material-icons left">
+        exit_to_app
+      </i>
+      Salir
+    </a>
+  </li>
+  <li class="divider"></li>
+</ul>
+</div>
+</div>
+</nav>
+
+<h1>Listado de Libros</h1>
+<div class="row">
+  {{#each books}}
+    <div class="col s12 m6 l4">
+      <div class="card horizontal">
+        <div class="card-image">
+          <img src="/images/book-cover/{{cover}}" alt="{{title}} cover">
+        </div>
+        <div class="card-stacked">
+          <div class="card-content">
+            <span class="card-title">{{title}}</span>
+            <p>Autor: {{author}}</p>
+            <p>Categoría: {{category}}</p>
+            <p>ISBN: {{isbn}}</p>
+            <p>Copias disponibles: {{copies}}</p>
+          </div>
+          <div class="card-action">
+            <a href="/book/edit/{{_id}}">
+              <i class="material-icons" 
+                style = "display: inline-flex; vertical-align: sub;">edit</i>
+              Editar Libro
+            </a>
+            <a href="javascript: deleteBook('{{_id}}')" class="inline">
+              <i class="material-icons" 
+                style = "display: inline-flex; vertical-align: sub;">
+                delete</i>
+              Borrar Libro
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <p>No hay libros que listar.</p>
+  {{/each}}
+</div>
