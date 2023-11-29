@@ -1,15 +1,123 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Bebas+Neue&display=swap" rel="stylesheet">
+<!-- Dropdow para menu "Usuarios" -->
+<ul id="user-dropdown-menu" class="dropdown-content">
+  <li>
+    <a href="/user/login">
+      <i class="large material-icons" style="margin: 2px;">
+        login
+      </i>
+      Ingresar
+    </a>
+  </li>
+  <li class="divider"></li>
+    <li>
+    <a href="/user/register">
+      <i class="large material-icons" style="margin: 2px;">
+        person_add
+      </i>
+      Registrarse
+    </a>
+  </li>
+</ul>
+
+<!-- Inicia marcado de barra de navegación -->
+<nav class="blue darken-4">
+  <div class="container">
+    <div class="nav-wrapper">
+      <!-- Visulización de navegación en pantalla completa -->
+      <a href="/" class="brand-logo">
+        📚 BiblioTec
+      </a>
+      <ul id="nav" class="right hide-on-med-and-down">
+        <li>
+          <a href="/">
+            <i class="large material-icons right">
+              home
+            </i>
+            Inicio
+          </a>
+        </li>
+        <li>
+          <a href="/about">
+            <i class="material-icons right">
+              business
+            </i>
+            Acerca De.
+          </a>
+        </li>
+        <!-- User Dropdown -->
+        <li>
+          <a class="dropdown-trigger" href="#!" data-target="user-dropdown-menu">
+            Usuario
+            <i class="material-icons right">
+              people
+            </i>
+          </a>
+        </li>
+      </ul>
+      <!-- Visulización de Navegación para moviles -->
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger">
+        <i class="material-icons">
+          menu
+        </i>
+      </a>
+      <ul id="nav-mobile" class="sidenav">
+        <li>
+          <a href="/">
+            <i class="large material-icons left">
+              home
+            </i>
+            Inicio
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="/user/login">
+            <i class="material-icons left">
+              login
+            </i>
+            Ingresar
+          </a>
+        </li>
+        <li>
+          <a href="/user/register">
+            <i class="material-icons left">
+              person_add
+            </i>
+            Registrarse
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="/about">
+            <i class="material-icons left">
+              business
+            </i>
+            Acerca De.
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <div class="row center light-blue lighten-4" 
   style="margin:3em; padding: 2em; border-radius: 1em;">
-  <h1 class="header center teal-text">Bienvenido a ProjNotes</h1>
-  <h3>{{ icon }}</h3>
+  <h1 class="tituloBibliotec header center teal-text">BIBLIOTEC</h1>
+  <img class="imageBackground" src="/images/imageBook.png" alt="virtualBook">
   <div class="row center">
     <h5 class="header col s12 light grey-text text-darken-3">
-      Una aplicación que te permitirá registrar las ideas de proyectos
-      que se te van ocurriendo.
+      Bienvenido a la biblioteca del Tecnologico Nacional de México Campus Gustavo A. Madero
     </h5>
+    <h4 class="header col s12 light grey-text text-darken-3 justify-text">
+      Dentro, podrás consultar los diversos libros que tenemos, así como también podrás reservarlos.
+      Podrás manejar todo esto y más en tu cuenta de usuario, anímate a registrar una cuenta con nosotros.
+    </h4>
   </div>
   <div class="row center">
-    <a href="/project/add" id="download-button"
-      class="btn-large waves-effect waves-light teal">Registra un Proyecto</a>
+    <a href="/user/register" id="download-button"
+      class="btn-large waves-effect waves-light teal">Crear una cuenta</a>
   </div>
 </div>

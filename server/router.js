@@ -6,6 +6,7 @@ import log from './config/winston';
 import homeRouter from './domains/home/home.router';
 import userRouter from './domains/user/user.router';
 import projectsRouter from './domains/projects/project.router';
+import rootRouter from './domains/root/root.router'; // Importando enrutador root
 // Función que agrega rutas
 const addRoutes = (app) => {
   // Agregando enrutado de Home
@@ -13,6 +14,8 @@ const addRoutes = (app) => {
   app.use('/about', homeRouter);
   app.use('/user', userRouter);
   app.use('/project', projectsRouter);
+  app.use('/root', rootRouter); // Agregando enrutado de root
+
   // ERRORES
   // catch 404 and forward to error handler
   app.use((req, res, next) => {

@@ -35,3 +35,14 @@ h1{
   width: 130px;
   margin: auto;
 }
+
+.tituloBibliotec
+{
+  font-family: 'Monserrat';
+}
+
+.imageBackground
+{
+  width: 550px;
+  height: 400px;
+}
