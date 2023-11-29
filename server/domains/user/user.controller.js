@@ -35,10 +35,10 @@ const loginPost = async (request, response) => {
     // comparePassword viene del modelo de usuario
     if (user && user.comparePassword(password)) {
       // Si el correo y la contraseña son válidos, redirigir a otra página
-      response.send('Usuario logueado');
+      response.render('user/userHome');
     } else {
       // Si el correo o la contraseña son incorrectos, mostrar un mensaje de error
-      response.send('Usuario o contraseña incorrectos');
+      request.render('user/login');
     }
   } catch (error) {
     // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
@@ -61,6 +61,7 @@ const registerPost = async (req, res) => {
     const user = await User.create(userFormData);
     log.info(`Usuario creado: ${JSON.stringify(user)}`);
     // 3. Se contesta al cliente con el usuario creado
+    req.flash('success', 'Usuario creado exitosamente');
     return res.status(200).redirect('/user/login');
   } catch (error) {
     log.error(error.message);

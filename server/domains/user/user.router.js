@@ -30,6 +30,8 @@ router.post(
   userController.registerPost
 );
 
+// POST '/user/login'
+// Cuando el usuario hace clic en el boton de login
 router.post(
   '/login',
   ValidateFactory(userValidator.login),
