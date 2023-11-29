@@ -83,6 +83,10 @@ UserSchema.methods = {
       updatedAt: this.updatedAt,
     };
   },
+  // Metodo para comparar la contraseña usado en el controlador
+  comparePassword(password) {
+    return bcrypt.compareSync(password, this.password);
+  },
 };
 
 // Hooks

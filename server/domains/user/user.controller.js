@@ -3,35 +3,6 @@ import User from './user.model';
 
 // Action Methods
 
-// GET '/user/login'
-const login = (req, res) => {
-  // Sirve el formulario de login
-  log.info('Se entrega formulario de login');
-  res.render('user/login');
-};
-
-// POST '/user/login'
-const loginPost = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Buscar el usuario en la base de datos por correo electrónico
-    const user = await User.findOne({ email });
-
-    // Verificar si el usuario existe y si la contraseña es correcta
-    if (user && user.comparePassword(password)) {
-      // Si el correo y la contraseña son válidos, redirigir a otra página
-      res.send('Usuario logueado');
-    } else {
-      // Si el correo o la contraseña son incorrectos, mostrar un mensaje de error
-      res.redirect('/user/login');
-    }
-  } catch (error) {
-    // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
-    console.error(error);
-  }
-};
-
 // GET '/user/logout'
 const logout = (req, res) => {
   log.info('Se cierra sesion');
@@ -42,6 +13,37 @@ const logout = (req, res) => {
 const register = (req, res) => {
   log.info('Se entrega formulario de registro');
   res.render('user/register');
+};
+
+// GET '/user/login'
+const login = (req, res) => {
+  // Sirve el formulario de login
+  log.info('Se entrega formulario de login');
+  res.render('user/login');
+};
+
+// POST '/user/login'
+const loginPost = async (request, response) => {
+  // Del formulario obten el correo y contraseña
+  const { email, password } = request.body;
+  // Intenta
+  try {
+    // Buscar el usuario en la base de datos por correo electrónico
+    const user = await User.findOne({ email });
+
+    // Verificar si el usuario existe y si la contraseña es correcta
+    // comparePassword viene del modelo de usuario
+    if (user && user.comparePassword(password)) {
+      // Si el correo y la contraseña son válidos, redirigir a otra página
+      response.send('Usuario logueado');
+    } else {
+      // Si el correo o la contraseña son incorrectos, mostrar un mensaje de error
+      response.send('Usuario o contraseña incorrectos');
+    }
+  } catch (error) {
+    // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
+    console.error(error);
+  }
 };
 
 // POST '/user/register'

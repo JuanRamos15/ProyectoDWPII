@@ -30,5 +30,11 @@ router.post(
   userController.registerPost
 );
 
+router.post(
+  '/login',
+  ValidateFactory(userValidator.login),
+  userController.loginPost
+);
+
 // Exporto este tramo de ruta
 export default router;
