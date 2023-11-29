@@ -37,4 +37,27 @@ const signUp = {
   getObject: getSignUp,
 };
 
-export default { signUp };
+// Login schema
+const loginSchema = Yup.object().shape({
+  mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
+  password: Yup.string()
+    .min(6)
+    .required('Se requiere ingresar password de al menos 6 caracteres'),
+});
+
+// Middleware de extracción
+const getLogin = (req) => {
+  // Desestructuramos la informacion
+  const { mail, password } = req.body; // Se regresa el objeto signup
+  return {
+    mail,
+    password,
+  };
+};
+
+const login = {
+  schema: loginSchema,
+  getObject: getLogin,
+};
+
+export default { signUp, login };
