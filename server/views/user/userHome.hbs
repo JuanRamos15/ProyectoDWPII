@@ -1,26 +1,28 @@
 <!-- Dropdown for "Library Actions" -->
 <ul id="dropdownMenu" class="dropdown-content">
   <li>
-    <a href="/library/listBooks">
+    <a href="/user/listBooks">
       <i class="large material-icons" style="margin: 2px;">book</i>
-      Listar Libros
+      Consultar Libros <br> Disponibles <!-- Adjusted text alignment -->
     </a>
   </li>
   <li class="divider"></li>
   <li>
-    <a href="/library/addBook">
-      <i class="large material-icons" style="margin: 2px;">library_add</i>
-      Registrar Libro
+    <a href="/user/Penalties">
+      <i class="large material-icons" style="margin: 2px;">warning</i> <!-- Changed icon to "warning" -->
+      Multas
     </a>
   </li>
+  <li class="divider"></li>
   <li>
-    <a href="/library/loanReturn">
+    <a href="/user/loan">
       <i class="large material-icons" style="margin: 2px;">compare_arrows</i>
-      Préstamo/Devolución
+      Préstamos
     </a>
   </li>
+  <li class="divider"></li>
   <li>
-    <a href="/library/reserveBook">
+    <a href="/user/reserveBook">
       <i class="large material-icons" style="margin: 2px;">event_note</i>
       Reservar Libro
     </a>
@@ -30,15 +32,15 @@
 <!-- Dropdown for "Usuarios" -->
 <ul id="user-dropdown-menu" class="dropdown-content">
   <li>
-    <a href="/user/register">
+    <a href="/user/modify">
       <i class="large material-icons" style="margin: 2px;">person_add</i>
-      Registro
+      Modificar Usuario
     </a>
   </li>
   <li>
     <a href="/user/login">
       <i class="large material-icons" style="margin: 2px;">login</i>
-      Ingresar
+      Ingresar con otra cuenta
     </a>
   </li>
   <li>
@@ -50,7 +52,7 @@
 </ul>
 
 <!-- Navigation Bar Markup -->
-<nav class="blue darken-2">
+<nav class="blue darken-4">
   <div class="container">
     <div class="nav-wrapper">
       <!-- Full-Screen Navigation -->
@@ -59,20 +61,15 @@
       </a>
       <ul id="nav" class="right hide-on-med-and-down">
         <li>
-          <a href="/">
+          <a href="/user/userHome">
             <i class="large material-icons right">home</i>
             Inicio
-          </a>
-        </li>
-        <li>
-          <a href="/about">
-            <i class="material-icons right">info</i>
-            Acerca De
           </a>
         </li>
         <!-- Dropdown Trigger (Acciones) -->
         <li>
           <a class="dropdown-trigger" href="#!" data-target="dropdownMenu">
+            <i class="material-icons left">build</i>
             Acciones
             <i class="material-icons right">arrow_drop_down</i>
           </a>
@@ -80,8 +77,8 @@
         <!-- User Dropdown -->
         <li>
           <a class="dropdown-trigger" href="#!" data-target="user-dropdown-menu">
-            <i class="material-icons right">person</i>
-            Usuarios
+            <i class="material-icons left">person</i>
+            Usuario
             <i class="material-icons right">arrow_drop_down</i>
           </a>
         </li>
@@ -92,51 +89,43 @@
       </a>
       <ul id="nav-mobile" class="sidenav">
         <li>
-          <a href="/">
+          <a href="/user/userHome">
             <i class="large material-icons left">home</i>
             Inicio
           </a>
         </li>
-        <li class="divider"></li>
+        <!-- Dropdown Trigger (Acciones) -->
         <li>
-          <a href="/library/showDashboard">
-            <i class="large material-icons left">list</i>
-            Listar libros
+          <a class="dropdown-trigger" href="#!" data-target="dropdownMenu">
+            <i class="material-icons left">build</i>
+            Acciones
+            <i class="material-icons right">arrow_drop_down</i>
           </a>
         </li>
+        <!-- User Dropdown -->
         <li>
-          <a href="/library/addBook">
-            <i class="large material-icons left">add_box</i>
-            Registrar libros
-          </a>
-        </li>
-        <li class="divider"></li>
-        <li>
-          <a href="/user/login">
-            <i class="material-icons left">login</i>
-            Ingresar
-          </a>
-        </li>
-        <li>
-          <a href="/user/register">
-            <i class="material-icons left">person_add</i>
-            Registrarse
-          </a>
-        </li>
-        <li>
-          <a href="/user/logout">
-            <i class="material-icons left">logout</i>
-            Cerrar Sesión
-          </a>
-        </li>
-        <li class="divider"></li>
-        <li>
-          <a href="/about">
-            <i class="material-icons left">business</i>
-            Acerca De
+          <a class="dropdown-trigger" href="#!" data-target="user-dropdown-menu">
+            <i class="material-icons left">person</i>
+            Usuario
+            <i class="material-icons right">arrow_drop_down</i>
           </a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+
+<!-- User Home Body Markup -->
+<div class="container" style="margin-top: 50px;">
+  <div class="row">
+    <div class="col s12">
+      <div class="blue darken-3" style="padding: 20px; text-align: center; color: white;">
+        <i class="large material-icons">menu_book</i>
+        <h4>¡Bienvenido a BiblioTec!</h4>
+        <p>Explora nuestra amplia colección de libros digitales.</p>
+        <p>Disfruta de la lectura y aprendizaje.</p>
+      </div>
+    </div>
+  </div>
+</div>

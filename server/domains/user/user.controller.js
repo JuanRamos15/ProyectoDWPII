@@ -22,6 +22,37 @@ const login = (req, res) => {
   res.render('user/login');
 };
 
+// GET '/user/userHome'
+const userHome = (req, res) => {
+  log.info('Se entrega home de usuario');
+  res.render('user/userHome');
+};
+
+// GET '/user/listBooks'
+const listBooks = (req, res) => {
+  res.send('Se entrega lista de libros');
+};
+
+// GET '/user/penalties'
+const penalties = (req, res) => {
+  res.send('Se entrega lista de multas');
+};
+
+// GET '/user/loan'
+const loan = (req, res) => {
+  res.send('Se entrega lista de prestamos');
+};
+
+// GET '/user/reserveBook'
+const reserveBook = (req, res) => {
+  res.send('Se entrega lista de libros reservados');
+};
+
+// GET '/user/modify'
+const modify = (req, res) => {
+  res.send('Se entrega formulario de modificacion');
+};
+
 // POST '/user/login'
 const loginPost = async (request, response) => {
   // Del formulario obten el correo y contraseña
@@ -35,10 +66,10 @@ const loginPost = async (request, response) => {
     // comparePassword viene del modelo de usuario
     if (user && user.comparePassword(password)) {
       // Si el correo y la contraseña son válidos, redirigir a otra página
-      response.render('user/userHome');
+      response.redirect('userHome');
     } else {
       // Si el correo o la contraseña son incorrectos, mostrar un mensaje de error
-      request.render('user/login');
+      response.redirect('login');
     }
   } catch (error) {
     // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
@@ -79,4 +110,10 @@ export default {
   register,
   registerPost,
   loginPost,
+  userHome,
+  listBooks,
+  penalties,
+  loan,
+  reserveBook,
+  modify,
 };

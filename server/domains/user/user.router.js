@@ -23,6 +23,24 @@ router.get('/logout', userController.logout);
 // GET '/user/register'
 router.get('/register', userController.register);
 
+// GET '/user/userHome'
+router.get('/userHome', userController.userHome);
+
+// GET '/user/listBooks'
+router.get('/listBooks', userController.listBooks);
+
+// GET '/user/penalties'
+router.get('/penalties', userController.penalties);
+
+// GET '/user/loan'
+router.get('/loan', userController.loan);
+
+// GET '/user/reserveBook'
+router.get('/reserveBook', userController.reserveBook);
+
+// GET '/user/modify'
+router.get('/modify', userController.modify);
+
 // POST '/user/register'
 router.post(
   '/register',
