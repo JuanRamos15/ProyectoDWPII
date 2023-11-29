@@ -4,6 +4,8 @@ import * as Yup from 'yup';
 const signUpSchema = Yup.object().shape({
   firstName: Yup.string().required('Se requiere ingresar nombre'),
   lastname: Yup.string().required('Se requiere ingresar apellido'),
+  studentId: Yup.string().required('Se requiere ingresar matricula'),
+  major: Yup.string().required('Se requiere ingresar carrera'),
   mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
   password: Yup.string()
     .min(6)
@@ -17,10 +19,13 @@ const signUpSchema = Yup.object().shape({
 // Middleware de extracción
 const getSignUp = (req) => {
   // Desestructuramos la informacion
-  const { firstName, lastname, mail, password, cpassword } = req.body; // Se regresa el objeto signup
+  const { firstName, lastname, studentId, major, mail, password, cpassword } =
+    req.body; // Se regresa el objeto signup
   return {
     firstName,
     lastname,
+    studentId,
+    major,
     mail,
     password,
     cpassword,

@@ -12,6 +12,8 @@ const UserSchema = new Schema(
   {
     firstName: { type: String, required: true },
     lastname: { type: String, required: true },
+    studentId: { type: String, required: true },
+    major: { type: String, required: true },
     mail: {
       type: String,
       unique: true,
@@ -21,7 +23,7 @@ const UserSchema = new Schema(
           // eslint-disable-next-line no-useless-escape
           return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(mail);
         },
-        message: `{VALUE} noes un email valido`,
+        message: `{VALUE} no es un email válido`,
       },
     },
     password: {
@@ -32,7 +34,7 @@ const UserSchema = new Schema(
       validate: {
         validator(password) {
           if (process.env.NODE_ENV === 'development') {
-            // Sin validacion rigurosa en Dev
+            // Sin validación rigurosa en Dev
             return true;
           }
           return validator.isStrongPassword(password, {
@@ -44,7 +46,7 @@ const UserSchema = new Schema(
             returnScore: false,
           });
         },
-        message: 'Es necesario ingresar un password fuerte',
+        message: 'Es necesario ingresar una contraseña fuerte',
       },
     },
     emailConfirmationToken: String,
@@ -56,9 +58,9 @@ const UserSchema = new Schema(
 // Adding Plugins to Schema
 UserSchema.plugin(uniqueValidator);
 
-// Asignando metodos de instancia
+// Asignando métodos de instancia
 UserSchema.methods = {
-  // Metodo para encriptar el password
+  // Método para encriptar el password
   hashPassword() {
     return bcrypt.hashSync(this.password, 10);
   },
@@ -66,12 +68,14 @@ UserSchema.methods = {
   generateConfirmationToken() {
     return crypto.randomBytes(64).toString('hex');
   },
-  // Funcion de tranformacion a Json personalizada
+  // Función de transformación a JSON personalizada
   toJSON() {
     return {
       id: this.id,
       firstName: this.firstName,
       lastname: this.lastname,
+      studentId: this.studentId,
+      major: this.major,
       mail: this.mail,
       emailConfirmationToken: this.emailConfirmationToken,
       emailConfirmationAt: this.emailConfirmationAt,
@@ -90,5 +94,5 @@ UserSchema.pre('save', function presave(next) {
   return next();
 });
 
-// 4. Compilando el modelo y exportandolo
+// 4. Compilando el modelo y exportándolo
 export default mongoose.model('user', UserSchema);
