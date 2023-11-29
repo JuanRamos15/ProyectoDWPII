@@ -10,9 +10,32 @@ const login = (req, res) => {
   res.render('user/login');
 };
 
+// POST '/user/login'
+const loginPost = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Buscar el usuario en la base de datos por correo electrónico
+    const user = await User.findOne({ email });
+
+    // Verificar si el usuario existe y si la contraseña es correcta
+    if (user && user.comparePassword(password)) {
+      // Si el correo y la contraseña son válidos, redirigir a otra página
+      res.send('Usuario logueado');
+    } else {
+      // Si el correo o la contraseña son incorrectos, mostrar un mensaje de error
+      res.redirect('/user/login');
+    }
+  } catch (error) {
+    // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
+    console.error(error);
+  }
+};
+
 // GET '/user/logout'
 const logout = (req, res) => {
-  res.send("🚧 UNDER CONSTRUCTION GET  '/user/logout' 🚧");
+  log.info('Se cierra sesion');
+  res.render('user/logout');
 };
 
 // GET '/user/register'
@@ -52,4 +75,5 @@ export default {
   logout,
   register,
   registerPost,
+  loginPost,
 };

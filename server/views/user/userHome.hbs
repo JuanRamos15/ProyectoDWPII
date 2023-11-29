@@ -1,0 +1,142 @@
+<!-- Dropdown for "Library Actions" -->
+<ul id="dropdownMenu" class="dropdown-content">
+  <li>
+    <a href="/library/listBooks">
+      <i class="large material-icons" style="margin: 2px;">book</i>
+      Listar Libros
+    </a>
+  </li>
+  <li class="divider"></li>
+  <li>
+    <a href="/library/addBook">
+      <i class="large material-icons" style="margin: 2px;">library_add</i>
+      Registrar Libro
+    </a>
+  </li>
+  <li>
+    <a href="/library/loanReturn">
+      <i class="large material-icons" style="margin: 2px;">compare_arrows</i>
+      Préstamo/Devolución
+    </a>
+  </li>
+  <li>
+    <a href="/library/reserveBook">
+      <i class="large material-icons" style="margin: 2px;">event_note</i>
+      Reservar Libro
+    </a>
+  </li>
+</ul>
+
+<!-- Dropdown for "Usuarios" -->
+<ul id="user-dropdown-menu" class="dropdown-content">
+  <li>
+    <a href="/user/register">
+      <i class="large material-icons" style="margin: 2px;">person_add</i>
+      Registro
+    </a>
+  </li>
+  <li>
+    <a href="/user/login">
+      <i class="large material-icons" style="margin: 2px;">login</i>
+      Ingresar
+    </a>
+  </li>
+  <li>
+    <a href="/user/logout">
+      <i class="large material-icons" style="margin: 2px;">logout</i>
+      Salir
+    </a>
+  </li>
+</ul>
+
+<!-- Navigation Bar Markup -->
+<nav class="blue darken-2">
+  <div class="container">
+    <div class="nav-wrapper">
+      <!-- Full-Screen Navigation -->
+      <a href="/" class="brand-logo">
+        📚 BiblioTec
+      </a>
+      <ul id="nav" class="right hide-on-med-and-down">
+        <li>
+          <a href="/">
+            <i class="large material-icons right">home</i>
+            Inicio
+          </a>
+        </li>
+        <li>
+          <a href="/about">
+            <i class="material-icons right">info</i>
+            Acerca De
+          </a>
+        </li>
+        <!-- Dropdown Trigger (Acciones) -->
+        <li>
+          <a class="dropdown-trigger" href="#!" data-target="dropdownMenu">
+            Acciones
+            <i class="material-icons right">arrow_drop_down</i>
+          </a>
+        </li>
+        <!-- User Dropdown -->
+        <li>
+          <a class="dropdown-trigger" href="#!" data-target="user-dropdown-menu">
+            <i class="material-icons right">person</i>
+            Usuarios
+            <i class="material-icons right">arrow_drop_down</i>
+          </a>
+        </li>
+      </ul>
+      <!-- Mobile Navigation -->
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger">
+        <i class="material-icons">menu</i>
+      </a>
+      <ul id="nav-mobile" class="sidenav">
+        <li>
+          <a href="/">
+            <i class="large material-icons left">home</i>
+            Inicio
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="/library/showDashboard">
+            <i class="large material-icons left">list</i>
+            Listar libros
+          </a>
+        </li>
+        <li>
+          <a href="/library/addBook">
+            <i class="large material-icons left">add_box</i>
+            Registrar libros
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="/user/login">
+            <i class="material-icons left">login</i>
+            Ingresar
+          </a>
+        </li>
+        <li>
+          <a href="/user/register">
+            <i class="material-icons left">person_add</i>
+            Registrarse
+          </a>
+        </li>
+        <li>
+          <a href="/user/logout">
+            <i class="material-icons left">logout</i>
+            Cerrar Sesión
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="/about">
+            <i class="material-icons left">business</i>
+            Acerca De
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
