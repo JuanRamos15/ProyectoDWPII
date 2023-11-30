@@ -25,6 +25,8 @@ router.get('/reserveBook', rootController.reserveBook);
 router.get('/modify', rootController.modifyUser);
 // GET '/root/manage'
 router.get('/manage', rootController.manage);
+// Get '/root/edit/id'
+router.get('/edit/:id', rootController.bookEdit);
 
 // POST '/root/addBook'
 router.post(
@@ -35,6 +37,17 @@ router.post(
   }),
   rootController.addBookPost
 );
+
+// PUT '/root/edit/id'
+router.put(
+  '/edit/:id',
+  ValidateFactory({
+    schema: bookValidator.bookRootSchema,
+    getObject: bookValidator.getBook,
+  }),
+  rootController.editPut
+);
+
 // DELETE "/project/:id"
 router.delete('/:id', rootController.deleteBook);
 // Exporto este tramo de ruta

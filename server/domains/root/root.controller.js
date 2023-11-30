@@ -11,7 +11,7 @@ const addBook = (req, res) => {
   log.info('Se entrega formulario de registro de libro');
   res.render('root/addBook');
 };
-// GET '/root/register'
+// GET '/root/listBooks'
 const listBooks = async (req, res) => {
   log.info('Se entrega la lista de libros registrados en el sistema');
   // Consulta los libros
@@ -90,28 +90,75 @@ const addBookPost = async (req, res) => {
     return res.redirect('/root/addBook');
   }
 };
+
 // GET 'book'/edit/:id'
 const bookEdit = async (req, res) => {
-  // Se extrae el id de los parámetros
   const { id } = req.params;
   // Buscando en la base de datos
   try {
     log.info(`Se inicia la busqueda del proyecto con el id: ${id}`);
-    // Se busca el proyecto en la base de datos
     const book = await BookModel.findOne({ _id: id }).lean().exec();
     if (book === null) {
       log.info(`No se encontro el proyecto con el id: ${id}`);
-      return res
-        .status(404)
-        .json({ fail: `No se encontro el proyecto con el id: ${id}` });
+      return res.status(404).json({ message: 'No se encontro el proyecto' });
     }
-    log.info(`Proyecto encontrado con el id: ${id}`);
-    return res.render('root/BookEditView', { book });
+    // Se manda a renderizar la vista de edicion
+    log.info(`Se encontro el proyecto con el id: ${id}`);
+    return res.render('root/editBook', { book });
   } catch (error) {
-    log.error('Ocurre un error en: metodo "error" de project.controller');
+    log.error(`Error al buscar el proyecto con el id: ${id}`);
+    return res.status(500).json({ error });
+  }
+};
+
+// PUT '/root/edit/:id'
+const editPut = async (req, res) => {
+  const { id } = req.params;
+  // Rescatando la informacion del formulario
+  const { errorData: validationError } = req;
+  // En caso de haber error
+  if (validationError) {
+    log.info(
+      `Se entrega al cliente error de validación de edit Book con el id: ${id}`
+    );
+    // Se desestructuran los datos de validación
+    const { value: book } = validationError;
+    // Se extraen los campos que fallaron en la validación
+    const errorModel = validationError.inner.reduce((prev, curr) => {
+      // Creando una variable temporal para
+      // evitar el error "no-param-reassing"
+      const workingPrev = prev;
+      workingPrev[`${curr.path}`] = curr.message;
+      return workingPrev;
+    }, {});
+    return res.status(422).render('root/editBook', { book, errorModel });
+  }
+  // Si no hay error
+  const book = await BookModel.findOne({ _id: id });
+  if (book === null) {
+    log.info(`No se encontro el libro con el id: ${id}`);
+    return res.status(404).send('No se encontro el libro');
+  }
+  // En caso de encontrarse el documento se actualizan los datos
+  const { validData: newBook } = req;
+  book.bookTitle = newBook.bookTitle;
+  book.bookAuthor = newBook.bookAuthor;
+  book.bookCategory = newBook.bookCategory;
+  book.bookISBN = newBook.bookISBN;
+  book.bookQuantity = newBook.bookQuantity;
+  try {
+    // Se salvan los cambios
+    log.info(`Se actualizo el libro con el id: ${id}`);
+    await book.save();
+    return res.redirect('/root/listBooks');
+  } catch (error) {
+    log.error(`Error al actualizar el libro con el id: ${id}`);
+    // Agregando mensaje de flash
+    req.flash('errorMessage', 'Error al actualizar el libro');
     return res.status(500).json(error);
   }
 };
+
 // DELETE "/project/:id"
 const deleteBook = async (req, res) => {
   // Extrayendo el id de los parametros
@@ -126,6 +173,8 @@ const deleteBook = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
+// Exportando los metodos de accion
 export default {
   rootNav,
   addBook,
@@ -138,4 +187,5 @@ export default {
   addBookPost,
   bookEdit,
   deleteBook,
+  editPut,
 };
