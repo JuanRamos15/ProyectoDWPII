@@ -30,7 +30,7 @@ router.get('/userHome', userController.userHome);
 router.get('/listBooks', userController.listBooks);
 
 // GET '/user/penalties'
-router.get('/penalties', userController.penalties);
+router.get('/Penalties', userController.Penalties);
 
 // GET '/user/loan'
 router.get('/loan', userController.loan);

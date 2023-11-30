@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import log from '../../config/winston';
 import User from './user.model';
+import BookModel from '../root/bookRoot.model';
 
 // Action Methods
 
@@ -30,28 +31,36 @@ const userHome = (req, res) => {
 };
 
 // GET '/user/listBooks'
-const listBooks = (req, res) => {
-  res.send('Se entrega lista de libros');
+const listBooks = async (req, res) => {
+  log.info('Se entrega la lista de libros registrados en el sistema');
+  // Consulta los libros
+  const books = await BookModel.find({}).lean().exec();
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('user/listBooks', { books });
 };
 
 // GET '/user/penalties'
-const penalties = (req, res) => {
-  res.send('Se entrega lista de multas');
+const Penalties = (req, res) => {
+  log.info('Se entrega lista de multas');
+  res.render('user/penalties');
 };
 
 // GET '/user/loan'
 const loan = (req, res) => {
-  res.send('Se entrega lista de prestamos');
+  log.info('Se entrega lista de libros prestados');
+  res.render('user/loan');
 };
 
 // GET '/user/reserveBook'
 const reserveBook = (req, res) => {
-  res.send('Se entrega lista de libros reservados');
+  log.info('Se entrega lista de libros reservados');
+  res.render('user/reserveBook');
 };
 
 // GET '/user/modify'
 const modify = (req, res) => {
-  res.send('Se entrega formulario de modificacion');
+  log.info('Se entrega formulario de modificacion de datos');
+  res.render('user/modify');
 };
 
 // POST '/user/login'
@@ -113,7 +122,7 @@ export default {
   loginPost,
   userHome,
   listBooks,
-  penalties,
+  Penalties,
   loan,
   reserveBook,
   modify,
