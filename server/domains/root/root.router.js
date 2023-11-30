@@ -29,7 +29,10 @@ router.get('/manage', rootController.manage);
 // POST '/root/addBook'
 router.post(
   '/addBook',
-  ValidateFactory({bookValidator.submitBook}),
+  ValidateFactory({
+    schema: bookValidator.bookRootSchema,
+    getObject: bookValidator.getBook,
+  }),
   rootController.addBookPost
 );
 

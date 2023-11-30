@@ -24,11 +24,7 @@ const getBook = (req) => {
   };
 };
 
-const submitBook = {
-  schema: bookRootSchema,
-  getObject: getBook,
-};
-
 export default {
-  submitBook,
+  bookRootSchema,
+  getBook,
 };
