@@ -12,9 +12,12 @@ const addBook = (req, res) => {
   res.render('root/addBook');
 };
 // GET '/root/register'
-const listBooks = (req, res) => {
+const listBooks = async (req, res) => {
   log.info('Se entrega la lista de libros registrados en el sistema');
-  res.render('root/listBooks');
+  // Consulta los libros
+  const books = await BookModel.find({}).lean().exec();
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('root/listBooks', { books });
 };
 // Get '/root/penalties'
 const penalties = (req, res) => {
