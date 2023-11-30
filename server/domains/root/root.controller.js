@@ -90,7 +90,42 @@ const addBookPost = async (req, res) => {
     return res.redirect('/root/addBook');
   }
 };
-
+// GET 'book'/edit/:id'
+const bookEdit = async (req, res) => {
+  // Se extrae el id de los parámetros
+  const { id } = req.params;
+  // Buscando en la base de datos
+  try {
+    log.info(`Se inicia la busqueda del proyecto con el id: ${id}`);
+    // Se busca el proyecto en la base de datos
+    const book = await BookModel.findOne({ _id: id }).lean().exec();
+    if (book === null) {
+      log.info(`No se encontro el proyecto con el id: ${id}`);
+      return res
+        .status(404)
+        .json({ fail: `No se encontro el proyecto con el id: ${id}` });
+    }
+    log.info(`Proyecto encontrado con el id: ${id}`);
+    return res.render('root/BookEditView', { book });
+  } catch (error) {
+    log.error('Ocurre un error en: metodo "error" de project.controller');
+    return res.status(500).json(error);
+  }
+};
+// DELETE "/project/:id"
+const deleteBook = async (req, res) => {
+  // Extrayendo el id de los parametros
+  const { id } = req.params;
+  // Usando el modelo para borrar el proyecto
+  try {
+    const result = await BookModel.findByIdAndRemove(id);
+    // Agregando mensaje de flash
+    req.flash('successMessage', 'Proyecto borrado con exito');
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 export default {
   rootNav,
   addBook,
@@ -101,4 +136,6 @@ export default {
   modifyUser,
   manage,
   addBookPost,
+  bookEdit,
+  deleteBook,
 };
