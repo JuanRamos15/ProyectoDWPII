@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import log from '../../config/winston';
 import User from './user.model';
 
@@ -61,14 +62,14 @@ const loginPost = async (request, response) => {
   try {
     // Buscar el usuario en la base de datos por correo electrónico
     const user = await User.findOne({ email });
-
-    // Verificar si el usuario existe y si la contraseña es correcta
-    // comparePassword viene del modelo de usuario
-    if (user && user.comparePassword(password)) {
+    // Si el usuario existe y la contraseña es correcta
+    if (user && bcrypt.compareSync(password, user.password)) {
       // Si el correo y la contraseña son válidos, redirigir a otra página
+      log.info('Se inicia sesion como usuario');
       response.redirect('userHome');
     } else {
-      // Si el correo o la contraseña son incorrectos, mostrar un mensaje de error
+      // Si el correo o la contraseña son incorrectos
+      log.info('Correo o contraseña incorrectos');
       response.redirect('login');
     }
   } catch (error) {

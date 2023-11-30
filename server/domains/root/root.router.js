@@ -2,8 +2,54 @@ import { Router } from 'express';
 
 import rootController from './root.controller';
 
-const router = new Router();
+// Importando el factory de validación
+import ValidateFactory from '../../services/validateFactory';
 
-router.get('/', rootController.rootNav);
+// Importando el validador de libros
+import bookValidator from './bookRoot.validator';
+
+const router = new Router();
+// GET '/root/rootHome'
+router.get('/rootHome', rootController.rootNav);
+// GET '/root/addBook'
+router.get('/addBook', rootController.addBook);
+// GET '/root/listBooks'
+router.get('/listBooks', rootController.listBooks);
+// GET '/root/penalties'
+router.get('/penalties', rootController.penalties);
+// GET '/root/loan'
+router.get('/loan', rootController.loan);
+// GET '/root/reserveBook'
+router.get('/reserveBook', rootController.reserveBook);
+// Get '/root/modifyUser'
+router.get('/modify', rootController.modifyUser);
+// GET '/root/manage'
+router.get('/manage', rootController.manage);
+// Get '/root/edit/id'
+router.get('/edit/:id', rootController.bookEdit);
+
+// POST '/root/addBook'
+router.post(
+  '/addBook',
+  ValidateFactory({
+    schema: bookValidator.bookRootSchema,
+    getObject: bookValidator.getBook,
+  }),
+  rootController.addBookPost
+);
+
+// PUT '/root/edit/id'
+router.put(
+  '/edit/:id',
+  ValidateFactory({
+    schema: bookValidator.bookRootSchema,
+    getObject: bookValidator.getBook,
+  }),
+  rootController.editPut
+);
+
+// DELETE "/project/:id"
+router.delete('/:id', rootController.deleteBook);
+// Exporto este tramo de ruta
 
 export default router;
