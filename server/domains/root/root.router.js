@@ -2,6 +2,12 @@ import { Router } from 'express';
 
 import rootController from './root.controller';
 
+// Importando el factory de validación
+import ValidateFactory from '../../services/validateFactory';
+
+// Importando el validador de libros
+import bookValidator from './bookRoot.validator';
+
 const router = new Router();
 // GET '/root/rootHome'
 router.get('/rootHome', rootController.rootNav);
@@ -17,5 +23,14 @@ router.get('/loan', rootController.loan);
 router.get('/reserveBook', rootController.reserveBook);
 // Get '/root/modifyUser'
 router.get('/modify', rootController.modifyUser);
+// GET '/root/manage'
+router.get('/manage', rootController.manage);
+
+// POST '/root/addBook'
+router.post(
+  '/addBook',
+  ValidateFactory({bookValidator.submitBook}),
+  rootController.addBookPost
+);
 
 export default router;
