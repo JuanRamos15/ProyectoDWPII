@@ -8,7 +8,7 @@ import BookModel from '../root/bookRoot.model';
 // GET '/user/logout'
 const logout = (req, res) => {
   log.info('Se cierra sesion');
-  res.render('user/logout');
+  res.render('home/logout');
 };
 
 // GET '/user/register'
@@ -33,19 +33,23 @@ const userHome = (req, res) => {
 // GET '/user/listBooks'
 const listBooks = async (req, res) => {
   log.info('Se entrega la lista de libros registrados en el sistema');
-  // Obtén el ISBN del libro del request
-  const { isbn } = req.query;
-  log.info(`Buscando libros con el ISBN: ${isbn}`);
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el ISBN o título: ${query}`);
   // Consulta los libros
   let books;
-  if (isbn) {
-    // Si se proporcionó un ISBN, busca libros que coincidan con ese ISBN
-    books = await BookModel.find({ bookISBN: isbn }).lean().exec();
-    log.info(`Encontrados ${books.length} libros`);
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [{ bookISBN: query }, { bookTitle: new RegExp(query, 'i') }],
+    })
+      .lean()
+      .exec();
   } else {
-    // Si no se proporcionó un ISBN, obtén todos los libros
+    // Si no se proporcionó ninguno, obtén todos los libros
     books = await BookModel.find({}).lean().exec();
   }
+  log.info(`Encontrados ${books.length} libros`);
   // Se entrega la vista dashboardView con el viewmodel projects
   res.render('user/listBooks', { books });
 };
