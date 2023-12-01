@@ -37,6 +37,33 @@ const signUp = {
   getObject: getSignUp,
 };
 
+// Modify Schema
+const modifySchema = Yup.object().shape({
+  firstName: Yup.string().required('Se requiere ingresar nombre'),
+  lastname: Yup.string().required('Se requiere ingresar apellido'),
+  studentId: Yup.string().required('Se requiere ingresar matricula'),
+  major: Yup.string().required('Se requiere ingresar carrera'),
+  mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
+});
+
+// Middleware de extracción
+const getModify = (req) => {
+  // Desestructuramos la informacion
+  const { firstName, lastname, studentId, major, mail } = req.body; // Se regresa el objeto signup
+  return {
+    firstName,
+    lastname,
+    studentId,
+    major,
+    mail,
+  };
+};
+
+const modify = {
+  schema: modifySchema,
+  getObject: getModify,
+};
+
 // Login schema
 const loginSchema = Yup.object().shape({
   mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
@@ -60,4 +87,4 @@ const login = {
   getObject: getLogin,
 };
 
-export default { signUp, login };
+export default { signUp, login, modify };

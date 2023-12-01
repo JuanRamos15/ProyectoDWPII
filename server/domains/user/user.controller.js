@@ -73,9 +73,17 @@ const reserveBook = (req, res) => {
 };
 
 // GET '/user/modify'
-const modify = (req, res) => {
-  log.info('Se entrega formulario de modificacion de datos');
-  res.render('user/modify');
+const modify = async (req, res) => {
+  try {
+    // Se encuentra al usuario en la base de datos
+    const user = await User.findOne({ studentId: req.session.studentId })
+      .lean()
+      .exec();
+    log.info('Se entrega formulario de modificación de usuario');
+    res.render('user/modify', { user });
+  } catch (err) {
+    log.error(err);
+  }
 };
 
 // POST '/user/login'
@@ -130,6 +138,7 @@ const registerPost = async (req, res) => {
   }
 };
 
+// Prestamo de libro
 const postLoan = async (req, res) => {
   const { studentId } = req.session;
   log.info('Se solicita préstamo de libro');
@@ -158,6 +167,52 @@ const postLoan = async (req, res) => {
   return res.send('No hay copias disponibles');
 };
 
+// PUT '/user/modify'
+const postModify = async (req, res) => {
+  const { studentId } = req.session;
+  // Rescatando la información del formulario
+  const { errorData: validationError } = req;
+  // En caso de haber errores
+  if (validationError) {
+    log.info(`Error de validacion del usuario con ID: ${studentId}`);
+    // Se desestructura el error
+    const { value: user } = validationError;
+    // Se extraen los campos que fallaron en la validación
+    const errorModel = validationError.inner.reduce((prev, curr) => {
+      // Creando una variable temporal para
+      // evitar el error "no-param-reassing"
+      const workingPrev = prev;
+      workingPrev[`${curr.path}`] = curr.message;
+      return workingPrev;
+    }, {});
+    return res.status(422).render('user/modify', { user, errorModel });
+  }
+  // Si no hay errores
+  const user = await User.findOne({ studentId });
+  if (user === null) {
+    log.info(`No se encontro el usuario con el ID: ${studentId}`);
+    return res.status(404).send('No se encontro el usuario');
+  }
+  // En caso de encontrarse el documento se actualizan los datos
+  const { validData: newUser } = req;
+  // Se actualizan los datos del usuario
+  user.firstName = newUser.firstName;
+  user.lastName = newUser.lastName;
+  user.studentId = newUser.studentId;
+  user.major = newUser.major;
+  user.email = newUser.email;
+  try {
+    // Se guarda el usuario actualizado
+    await user.save();
+    log.info(`Se actualizo el usuario con ID: ${studentId}`);
+    // Se redirecciona a la pagina de modificacion
+    return res.status(200).redirect('/user/userHome');
+  } catch (error) {
+    log.error(`Error al actualizar el usuario con ID: ${studentId}`);
+    return res.status(500).json(error);
+  }
+};
+
 export default {
   login,
   logout,
@@ -171,4 +226,5 @@ export default {
   reserveBook,
   modify,
   postLoan,
+  postModify,
 };

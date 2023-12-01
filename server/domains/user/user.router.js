@@ -56,7 +56,15 @@ router.post(
   userController.loginPost
 );
 
+// POST '/user/loan
 router.post('/loan', userController.postLoan);
+
+// PUT '/user/modify
+router.put(
+  '/modify',
+  ValidateFactory(userValidator.modify),
+  userController.postModify
+);
 
 // Exporto este tramo de ruta
 export default router;
