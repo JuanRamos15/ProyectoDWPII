@@ -56,5 +56,7 @@ router.post(
   userController.loginPost
 );
 
+router.post('/loan', userController.postLoan);
+
 // Exporto este tramo de ruta
 export default router;

@@ -33,8 +33,19 @@ const userHome = (req, res) => {
 // GET '/user/listBooks'
 const listBooks = async (req, res) => {
   log.info('Se entrega la lista de libros registrados en el sistema');
+  // Obtén el ISBN del libro del request
+  const { isbn } = req.query;
+  log.info(`Buscando libros con el ISBN: ${isbn}`);
   // Consulta los libros
-  const books = await BookModel.find({}).lean().exec();
+  let books;
+  if (isbn) {
+    // Si se proporcionó un ISBN, busca libros que coincidan con ese ISBN
+    books = await BookModel.find({ bookISBN: isbn }).lean().exec();
+    log.info(`Encontrados ${books.length} libros`);
+  } else {
+    // Si no se proporcionó un ISBN, obtén todos los libros
+    books = await BookModel.find({}).lean().exec();
+  }
   // Se entrega la vista dashboardView con el viewmodel projects
   res.render('user/listBooks', { books });
 };
@@ -75,6 +86,7 @@ const loginPost = async (request, response) => {
     if (user && bcrypt.compareSync(password, user.password)) {
       // Si el correo y la contraseña son válidos, redirigir a otra página
       log.info('Se inicia sesion como usuario');
+      request.session.studentId = user.studentId;
       response.redirect('userHome');
     } else {
       // Si el correo o la contraseña son incorrectos
@@ -114,6 +126,34 @@ const registerPost = async (req, res) => {
   }
 };
 
+const postLoan = async (req, res) => {
+  const { studentId } = req.session;
+  log.info('Se solicita préstamo de libro');
+  // Obtén el ID del libro del request
+  const { id } = req.body;
+  // Busca el libro en la base de datos
+  const book = await BookModel.findById(id);
+  // Verifica si hay copias disponibles
+  if (book.bookQuantity > 0) {
+    // Reduce la cantidad de libros en 1
+    book.bookQuantity -= 1;
+    // Busca al usuario por studentId
+    const user = await User.findOne({ studentId });
+    // Verifica si el usuario existe
+    if (!user) {
+      return res.send('Usuario no encontrado');
+    }
+    // Establece el campo borrowedBy al studentId del usuario
+    book.borrowedBy = user.studentId;
+    // Guarda el libro en la base de datos
+    await book.save();
+    // Informa al cliente que el préstamo fue exitoso
+    return res.send('El préstamo fue exitoso');
+  }
+  // Informa al cliente que no hay copias disponibles
+  return res.send('No hay copias disponibles');
+};
+
 export default {
   login,
   logout,
@@ -126,4 +166,5 @@ export default {
   loan,
   reserveBook,
   modify,
+  postLoan,
 };
