@@ -32,11 +32,6 @@ const getSignUp = (req) => {
   };
 };
 
-const signUp = {
-  schema: signUpSchema,
-  getObject: getSignUp,
-};
-
 // Modify Schema
 const modifySchema = Yup.object().shape({
   firstName: Yup.string().required('Se requiere ingresar nombre'),
@@ -59,11 +54,6 @@ const getModify = (req) => {
   };
 };
 
-const modify = {
-  schema: modifySchema,
-  getObject: getModify,
-};
-
 // Login schema
 const loginSchema = Yup.object().shape({
   mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
@@ -82,9 +72,11 @@ const getLogin = (req) => {
   };
 };
 
-const login = {
-  schema: loginSchema,
-  getObject: getLogin,
+export default {
+  signUpSchema,
+  getSignUp,
+  modifySchema,
+  getModify,
+  loginSchema,
+  getLogin,
 };
-
-export default { signUp, login, modify };

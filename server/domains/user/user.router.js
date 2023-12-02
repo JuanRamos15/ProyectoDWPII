@@ -44,7 +44,10 @@ router.get('/modify', userController.modify);
 // POST '/user/register'
 router.post(
   '/register',
-  ValidateFactory(userValidator.signUp),
+  ValidateFactory({
+    schema: userValidator.getSignUp,
+    getObject: userValidator.getSignUp,
+  }),
   userController.registerPost
 );
 
@@ -52,7 +55,10 @@ router.post(
 // Cuando el usuario hace clic en el boton de login
 router.post(
   '/login',
-  ValidateFactory(userValidator.login),
+  ValidateFactory({
+    schema: userValidator.loginSchema,
+    getObject: userValidator.getLogin,
+  }),
   userController.loginPost
 );
 
@@ -62,7 +68,10 @@ router.post('/loan', userController.postLoan);
 // PUT '/user/modify
 router.put(
   '/modify',
-  ValidateFactory(userValidator.modify),
+  ValidateFactory({
+    schema: userValidator.modifySchema,
+    getObject: userValidator.getModify,
+  }),
   userController.postModify
 );
 
