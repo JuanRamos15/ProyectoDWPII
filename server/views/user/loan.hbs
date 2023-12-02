@@ -1,0 +1,26 @@
+{{> navbarUser}}
+
+<h1 style="font-family: Arial, sans-serif;">Prestamo de libro</h1>
+
+<p style="font-size: 1.5em;">Ingresa tus datos para poder pedir un libro. Estos deben ser el nombre del libro, tu número de control, la fecha de cuando lo pides y cuando lo regresas.</p>
+
+<form action="/user/loan" method="post">
+    <div>
+        <label for="bookName">Nombre del libro:</label>
+        <input type="text" id="bookName" name="bookName" required placeholder="Ingresa aquí el nombre del libro" style="font-size: 1.2em;">
+    </div>
+    <div>
+        <label for="studentId">Número de control:</label>
+        <input type="text" id="studentId" name="studentId" required placeholder="Ingresa aquí tu número de control" style="font-size: 1.2em;">
+    </div>
+    <div>
+        <label for="startDate">Fecha de inicio:</label>
+        <input type="date" id="startDate" name="startDate" required>
+    </div>
+    <div>
+        <label for="returnDate">Fecha de retorno:</label>
+        <input type="date" id="returnDate" name="returnDate" required>
+    </div>
+    <br> <!-- Add a line break for spacing -->
+    <button type="submit" class="waves-effect waves-light btn">Reservar</button>
+</form>

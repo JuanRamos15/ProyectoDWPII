@@ -1,13 +1,23 @@
 import bcrypt from 'bcrypt';
 import log from '../../config/winston';
 import User from './user.model';
+import BookModel from '../root/bookRoot.model';
 
 // Action Methods
 
 // GET '/user/logout'
 const logout = (req, res) => {
-  log.info('Se cierra sesion');
-  res.render('user/logout');
+  // Metodo proporcionado por el middleware de sesion de express
+  // Destruye la sesion y elimina los datos de la sesion en almacenamiento
+  req.session.destroy((error) => {
+    if (error) {
+      log.error('Error al cerrar la sesion', error);
+      res.redirect('userHome');
+    }
+
+    log.info('Se cierra sesion');
+    res.redirect('home/logout');
+  });
 };
 
 // GET '/user/register'
@@ -30,31 +40,67 @@ const userHome = (req, res) => {
 };
 
 // GET '/user/listBooks'
-const listBooks = (req, res) => {
-  res.send('Se entrega lista de libros');
+const listBooks = async (req, res) => {
+  log.info('Se entrega la lista de libros registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el ISBN o título: ${query}`);
+  // Consulta los libros
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${books.length} libros`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('user/listBooks', { books });
 };
 
 // GET '/user/penalties'
-const penalties = (req, res) => {
-  res.send('Se entrega lista de multas');
+const Penalties = (req, res) => {
+  log.info('Se entrega lista de multas');
+  res.render('user/penalties');
 };
 
 // GET '/user/loan'
 const loan = (req, res) => {
-  res.send('Se entrega lista de prestamos');
+  log.info('Se entrega lista de libros prestados');
+  res.render('user/loan');
 };
 
 // GET '/user/reserveBook'
 const reserveBook = (req, res) => {
-  res.send('Se entrega lista de libros reservados');
+  log.info('Se entrega lista de libros reservados');
+  res.render('user/reserveBook');
 };
 
 // GET '/user/modify'
-const modify = (req, res) => {
-  res.send('Se entrega formulario de modificacion');
+const modify = async (req, res) => {
+  try {
+    // Se encuentra al usuario en la base de datos
+    const user = await User.findById(req.session.userId).lean().exec();
+    log.info('Se entrega formulario de modificación de usuario');
+    // Se pasa el objeto a la vista 'user/modify' para que pueda acceder a los elementos
+    // del Schema de mongoose
+    res.render('user/modify', { user });
+  } catch (err) {
+    log.error(err);
+  }
 };
 
 // POST '/user/login'
+// Ingresa el usuario a la pagina
 const loginPost = async (request, response) => {
   // Del formulario obten el correo y contraseña
   const { email, password } = request.body;
@@ -66,6 +112,10 @@ const loginPost = async (request, response) => {
     if (user && bcrypt.compareSync(password, user.password)) {
       // Si el correo y la contraseña son válidos, redirigir a otra página
       log.info('Se inicia sesion como usuario');
+      // Se obtiene el id de la sesion
+      // eslint-disable-next-line no-underscore-dangle
+      request.session.userId = user._id;
+      // Se redirige a la pagina de inicio de usuario
       response.redirect('userHome');
     } else {
       // Si el correo o la contraseña son incorrectos
@@ -79,6 +129,7 @@ const loginPost = async (request, response) => {
 };
 
 // POST '/user/register'
+// Se registra el usuario en la base de datos
 const registerPost = async (req, res) => {
   const { validData: userFormData, errorData } = req;
   log.info('Se procesa formulario de registro');
@@ -88,12 +139,13 @@ const registerPost = async (req, res) => {
   }
   // En caso de no haber errores, se crea el usuario
   try {
-    // 1. Se crea una instancia del modelo User
+    // Se crea una instancia del modelo User
     // mendiante la funcion create del modelo
     const user = await User.create(userFormData);
+    // Se guarda la informacion dentro del log.info
     log.info(`Usuario creado: ${JSON.stringify(user)}`);
-    // 3. Se contesta al cliente con el usuario creado
-    req.flash('success', 'Usuario creado exitosamente');
+    // Se contesta al cliente con el usuario creado
+    // El status 200 y se redirige a la pagina de login
     return res.status(200).redirect('/user/login');
   } catch (error) {
     log.error(error.message);
@@ -105,6 +157,85 @@ const registerPost = async (req, res) => {
   }
 };
 
+// Prestamo de libro
+// POST '/user/loan'
+const postLoan = async (req, res) => {
+  // Se obtiene el studentId del usuario
+  const { studentId } = req.session;
+  log.info('Se solicita préstamo de libro');
+  // Obtén el ID del libro del request
+  const { id } = req.body;
+  // Busca el libro en la base de datos
+  const book = await BookModel.findById(id);
+  // Verifica si hay copias disponibles
+  if (book.bookQuantity > 0) {
+    // Reduce la cantidad de libros en 1
+    book.bookQuantity -= 1;
+    // Busca al usuario por studentId
+    const user = await User.findOne({ studentId });
+    // Verifica si el usuario existe
+    if (!user) {
+      return res.send('Usuario no encontrado');
+    }
+    // Establece el campo borrowedBy al studentId del usuario
+    book.borrowedBy = user.studentId;
+    // Guarda el libro en la base de datos
+    await book.save();
+    // Informa al cliente que el préstamo fue exitoso
+    return res.send('El préstamo fue exitoso');
+  }
+  // Informa al cliente que no hay copias disponibles
+  return res.send('No hay copias disponibles');
+};
+
+// PUT '/user/modify'
+// Modifica los datos del usuario
+const postModify = async (req, res) => {
+  const { userId } = req.session;
+  // Rescatando la información del formulario
+  const { errorData: validationError } = req;
+  // En caso de haber errores
+  if (validationError) {
+    log.info(`Error de validacion del usuario con ID: ${userId}`);
+    // Se desestructura el error
+    const { value: user } = validationError;
+    // Se extraen los campos que fallaron en la validación
+    const errorModel = validationError.inner.reduce((prev, curr) => {
+      // Creando una variable temporal para
+      // evitar el error "no-param-reassing"
+      const workingPrev = prev;
+      workingPrev[`${curr.path}`] = curr.message;
+      return workingPrev;
+    }, {});
+    return res.status(422).render('user/modify', { user, errorModel });
+  }
+  // Si no hay errores
+  const user = await User.findById(userId);
+  if (user === null) {
+    log.info(`No se encontro el usuario con el ID: ${userId}`);
+    return res.status(404).send('No se encontro el usuario');
+  }
+  // En caso de encontrarse el documento se actualizan los datos
+  const { validData: newUser } = req;
+  // Se actualizan los datos del usuario
+  user.firstName = newUser.firstName;
+  user.lastname = newUser.lastname;
+  user.studentId = newUser.studentId;
+  user.major = newUser.major;
+  user.mail = newUser.mail;
+  try {
+    // Se guarda el usuario actualizado
+    await user.save();
+    log.info(`Se actualizo el usuario con ID: ${userId}`);
+    // Se redirecciona a la pagina de modificacion
+    return res.status(200).redirect('/user/userHome');
+  } catch (error) {
+    log.error(`Error al actualizar el usuario con ID: ${userId}`);
+    return res.status(500).json(error);
+  }
+};
+
+// Exportar todos los metodos de acción
 export default {
   login,
   logout,
@@ -113,8 +244,10 @@ export default {
   loginPost,
   userHome,
   listBooks,
-  penalties,
+  Penalties,
   loan,
   reserveBook,
   modify,
+  postLoan,
+  postModify,
 };

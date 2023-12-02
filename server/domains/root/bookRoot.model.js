@@ -25,6 +25,10 @@ const BookSchema = new Schema({
     type: Number,
     required: true,
   },
+  borrowedBy: {
+    type: String,
+    ref: 'User',
+  },
 });
 
 // copilando el schema

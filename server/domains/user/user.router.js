@@ -30,7 +30,7 @@ router.get('/userHome', userController.userHome);
 router.get('/listBooks', userController.listBooks);
 
 // GET '/user/penalties'
-router.get('/penalties', userController.penalties);
+router.get('/Penalties', userController.Penalties);
 
 // GET '/user/loan'
 router.get('/loan', userController.loan);
@@ -54,6 +54,16 @@ router.post(
   '/login',
   ValidateFactory(userValidator.login),
   userController.loginPost
+);
+
+// POST '/user/loan
+router.post('/loan', userController.postLoan);
+
+// PUT '/user/modify
+router.put(
+  '/modify',
+  ValidateFactory(userValidator.modify),
+  userController.postModify
 );
 
 // Exporto este tramo de ruta
