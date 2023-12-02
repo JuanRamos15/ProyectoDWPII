@@ -7,6 +7,7 @@ import ValidateFactory from '../../services/validateFactory';
 
 // Importando el validador de libros
 import bookValidator from './bookRoot.validator';
+
 // importando el validador de usuarios
 import userValidator from '../user/user.validator';
 
@@ -61,7 +62,10 @@ router.delete('/:id', rootController.deleteBook);
 // PUT '/user/modify
 router.put(
   '/modifyUser/:id',
-  ValidateFactory(userValidator.modify),
+  ValidateFactory({
+    schema: userValidator.modifySchema,
+    getObject: userValidator.getModify,
+  }),
   rootController.modifyUserPut
 );
 

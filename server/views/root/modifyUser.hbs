@@ -1,29 +1,44 @@
 {{> navbarRoot}}
-<p>User ID: {{user._id}}</p>
-<form action="/root/modifyUser{{ user._id }}_method=put" method="post">
-    <h1>Modifica tu usuario</h1>
-    <p style="font-size: 20px;">Modifica los campos que necesites, recuerda no dejar ninguno en vacío</p>
-    <div>
-        <label for="firstName">Nombre:</label>
-        <input type="text" id="firstName" name="firstName" value="{{user.firstName}}" required autocomplete="off">
+
+<div class="row">
+    <div class="col s12 m10 offset-m1 18 offset-12">
+        <div class="card">
+            <div class="card-image">
+                <img  class="modifyUserImage" src="/images/editUserImage.jpg" alt="Imagen para edicion de usuarios">
+            </div>
+            <span class="card-title add-book" style="font-weight: bolder;"></span>
+
+            <form action="/root/modifyUser/{{ user._id }}?_method=put" method="post">
+                <h1>Modifica tu usuario</h1>
+                <p style="font-size: 20px;">Modifica los campos que necesites, recuerda no dejar ninguno en vacío</p>
+                <div>
+                    <label for="firstName">Nombre:</label>
+                    <input type="text" id="firstName" name="firstName" value="{{user.firstName}}" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="lastname">Apellido:</label>
+                    <input type="text" id="lastname" name="lastname" value="{{user.lastname}}" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="studentId">Número de control:</label>
+                    <input type="text" id="studentId" name="studentId" value="{{user.studentId}}" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="major">Carrera:</label>
+                    <input type="text" id="major" name="major" value="{{user.major}}" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="mail">Correo electrónico:</label>
+                    <input type="email" id="mail" name="mail" value="{{user.mail}}" required autocomplete="off">
+                </div>
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="waves-effect waves-light btn">
+                        <i class="material-icons left">edit</i>
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+
+        </div>
     </div>
-    <div>
-        <label for="lastname">Apellido:</label>
-        <input type="text" id="lastname" name="lastname" value="{{user.lastname}}" required autocomplete="off">
-    </div>
-    <div>
-        <label for="studentId">Número de control:</label>
-        <input type="text" id="studentId" name="studentId" value="{{user.studentId}}" required autocomplete="off">
-    </div>
-    <div>
-        <label for="major">Carrera:</label>
-        <input type="text" id="major" name="major" value="{{user.major}}" required autocomplete="off">
-    </div>
-    <div>
-        <label for="mail">Correo electrónico:</label>
-        <input type="email" id="mail" name="mail" value="{{user.mail}}" required autocomplete="off">
-    </div>
-    <div style="margin-top: 20px;">
-        <button type="submit" class="waves-effect waves-light btn">Actualizar</button>
-    </div>
-</form>
+</div>

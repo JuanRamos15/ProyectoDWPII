@@ -26,7 +26,10 @@ router.get('/logout', homeController.logout);
 // POST '/user/register'
 router.post(
   '/register',
-  ValidateFactory(userValidator.signUp),
+  ValidateFactory({
+    schema: userValidator.signUpSchema,
+    getObject: userValidator.getSignUp,
+  }),
   homeController.registerPost
 );
 
@@ -34,7 +37,10 @@ router.post(
 // Cuando el usuario hace clic en el boton de login
 router.post(
   '/login',
-  ValidateFactory(userValidator.login),
+  ValidateFactory({
+    schema: userValidator.loginSchema,
+    getObject: userValidator.getLogin,
+  }),
   homeController.loginPost
 );
 // Exporto este tramo de ruta

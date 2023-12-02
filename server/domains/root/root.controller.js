@@ -44,13 +44,22 @@ const userList = async (req, res) => {
 
 // GET 'put'/modifyUser'
 const modifyUser = async (req, res) => {
+  // Se extrae el id de los parametros
+  const { id } = req.params;
+  // Buscando en la base de datos
   try {
-    // Se extrae el id de los parametros
-    const user = await User.findById(req.params.id);
-    log.info('Se entrega formulario de modificacion de usuario');
-    res.render('root/modifyUser', { user });
+    log.info(`Se inicia la busqueda del usuario con el id: ${id}`);
+    const user = await User.findOne({ _id: id }).lean().exec();
+    if (user === null) {
+      log.info(`No se encontro el usuario con el id: ${id}`);
+      return res.status(404).json({ message: 'No se encontro el usuario' });
+    }
+    // Se manda a renderizar la vista de edicion
+    log.info(`Se encontro el usuario con el id: ${id}`);
+    return res.render('root/modifyUser', { user });
   } catch (error) {
-    log.error(`Error al buscar el usuario con el id: ${req.params.id}`);
+    log.error(`Error al buscar el usuario con el id: ${id}`);
+    return res.status(500).json(error);
   }
 };
 
@@ -188,6 +197,7 @@ const deleteBook = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 // PUT '/user/modify
 const modifyUserPut = async (req, res) => {
   const { id } = req.params;
@@ -196,7 +206,7 @@ const modifyUserPut = async (req, res) => {
   // En caso de haber error
   if (validationError) {
     log.info(
-      `Se entrega al cliente error de validación de edit Book con el id: ${id}`
+      `Se entrega al cliente error de validación de edit User con el id: ${id}`
     );
     // Se desestructuran los datos de validación
     const { value: user } = validationError;
@@ -208,19 +218,21 @@ const modifyUserPut = async (req, res) => {
       workingPrev[`${curr.path}`] = curr.message;
       return workingPrev;
     }, {});
-    return res.status(422).render('root/editBook', { user, errorModel });
+    return res.status(422).render('root/modifyUser', { user, errorModel });
   }
   // Si no hay error
-  const user = await User.findOne({ _id: id }).lean().exec();
+  const user = await User.findOne({ _id: id });
   if (user === null) {
     log.info(`No se encontro el usuario con el id: ${id}`);
     return res.status(404).send('No se encontro el usuario');
   }
   // En caso de encontrarse el documento se actualizan los datos
   const { validData: newUser } = req;
-  user.name = newUser.name;
-  user.lastName = newUser.lastName;
-  user.email = newUser.email;
+  user.firstName = newUser.firstName;
+  user.lastname = newUser.lastname;
+  user.studentId = newUser.studentId;
+  user.major = newUser.major;
+  user.mail = newUser.mail;
   try {
     // Se salvan los cambios
     log.info(`Se actualizo el usuario con el id: ${id}`);
@@ -228,8 +240,6 @@ const modifyUserPut = async (req, res) => {
     return res.redirect('/root/userList');
   } catch (error) {
     log.error(`Error al actualizar el usuario con el id: ${id}`);
-    // Agregando mensaje de flash
-    req.flash('errorMessage', 'Error al actualizar el usuario');
     return res.status(500).json(error);
   }
 };

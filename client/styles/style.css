@@ -79,3 +79,9 @@ h1{
   color: #007BFF;
   text-decoration: none;
 }
+
+.modifyUserImage{
+  width: 130px;
+  height: 130px;
+  margin: auto;
+}
