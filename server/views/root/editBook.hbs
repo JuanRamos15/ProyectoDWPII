@@ -19,7 +19,7 @@
                         id="book-title"
                         name="bookTitle"
                         placeholder="Ingrese el título del libro"
-                        class="validate" required>
+                        class="validate"  value='{{book.bookTitle}}' required>
                     </div>
                     <div class="input-field">
                         <label for="book-author">
@@ -29,7 +29,7 @@
                         id="bookAuthor"
                         name="bookAuthor"
                         placeholder="Ingrese el autor del libro"
-                        class="validate" required>
+                        class="validate" value='{{book.bookAuthor}}' required>
                     </div>
                     <div class="input-field">
                         <label for="book-category">
@@ -39,7 +39,7 @@
                         id="book-category"
                         name="bookCategory"
                         placeholder="Ingrese la categoría del libro"
-                        class="validate" required>
+                        class="validate"  value='{{book.bookCategory}}' required>
                     </div>
                     <div class="input-field">
                         <label for="book-isbn">
@@ -49,7 +49,7 @@
                         id="book-isbn"
                         name="bookISBN"
                         placeholder="Ingrese el ISBN del libro"
-                        class="validate" required>
+                        class="validate" value='{{book.bookISBN}}' required>
                     </div>
                     <div class="input-field">
                         <label for="book-copies">
@@ -59,7 +59,7 @@
                         id="book-copies"
                         name="bookQuantity"
                         placeholder="Ingrese el número de copias disponibles"
-                        class="validate" required>
+                        class="validate"  value='{{book.bookQuantity}}'required>
                     </div>
                 </div>
                 <div class="card-action">

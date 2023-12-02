@@ -41,7 +41,11 @@ const listBooks = async (req, res) => {
   if (query) {
     // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
     books = await BookModel.find({
-      $or: [{ bookISBN: query }, { bookTitle: new RegExp(query, 'i') }],
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
     })
       .lean()
       .exec();
