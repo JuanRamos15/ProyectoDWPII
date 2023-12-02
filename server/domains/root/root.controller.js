@@ -1,6 +1,7 @@
 import log from '../../config/winston';
 // Importando el modelo
 import BookModel from './bookRoot.model';
+import User from '../user/user.model';
 
 // import root from './book.model';
 const rootNav = (request, response) => {
@@ -35,10 +36,79 @@ const reserveBook = (req, res) => {
   res.render('root/reserveBook');
 };
 // GET 'root'/modifyUser'
-const modifyUser = (req, res) => {
+const modifyUser = async (req, res) => {
   log.info('Se entrega formulario de modificacion de usuario');
-  res.render('root/modify');
+  log.info('Se entrega la lista de usuarios registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando usuarios con el nombre o apellido: ${query}`);
+  // Consulta los usuarios
+  let users;
+  if (query) {
+    // Si se proporcionó una consulta, busca usuarios que coincidan con ese nombre o apellido
+    users = await User.find({
+      $or: [
+        { firstName: new RegExp(query, 'i') },
+        { lastname: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los usuarios
+    users = await User.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${users.length} usuarios`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('root/modify', { users });
 };
+
+// PUT '/user/modify'
+const postModify = async (req, res) => {
+  const { studentId } = req.session;
+  // Rescatando la información del formulario
+  const { errorData: validationError } = req;
+  // En caso de haber errores
+  if (validationError) {
+    log.info(`Error de validacion del usuario con ID: ${studentId}`);
+    // Se desestructura el error
+    const { value: user } = validationError;
+    // Se extraen los campos que fallaron en la validación
+    const errorModel = validationError.inner.reduce((prev, curr) => {
+      // Creando una variable temporal para
+      // evitar el error "no-param-reassing"
+      const workingPrev = prev;
+      workingPrev[`${curr.path}`] = curr.message;
+      return workingPrev;
+    }, {});
+    return res.status(422).render('user/modify', { user, errorModel });
+  }
+  // Si no hay errores
+  const user = await User.findOne({ studentId });
+  if (user === null) {
+    log.info(`No se encontro el usuario con el ID: ${studentId}`);
+    return res.status(404).send('No se encontro el usuario');
+  }
+  // En caso de encontrarse el documento se actualizan los datos
+  const { validData: newUser } = req;
+  // Se actualizan los datos del usuario
+  user.firstName = newUser.firstName;
+  user.lastname = newUser.lastname;
+  user.studentId = newUser.studentId;
+  user.major = newUser.major;
+  user.mail = newUser.mail;
+  try {
+    // Se guarda el usuario actualizado
+    await user.save();
+    log.info(`Se actualizo el usuario con ID: ${studentId}`);
+    // Se redirecciona a la pagina de modificacion
+    return res.status(200).redirect('/user/userHome');
+  } catch (error) {
+    log.error(`Error al actualizar el usuario con ID: ${studentId}`);
+    return res.status(500).json(error);
+  }
+};
+
 // GET '/root/manage'
 const manage = (req, res) => {
   log.info('Se entrega formulario de modificacion de usuario');
@@ -183,6 +253,7 @@ export default {
   loan,
   reserveBook,
   modifyUser,
+  postModify,
   manage,
   addBookPost,
   bookEdit,

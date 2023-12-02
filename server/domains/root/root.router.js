@@ -7,6 +7,8 @@ import ValidateFactory from '../../services/validateFactory';
 
 // Importando el validador de libros
 import bookValidator from './bookRoot.validator';
+// importando el validador de usuarios
+import userValidator from '../user/user.validator';
 
 const router = new Router();
 // GET '/root/rootHome'
@@ -27,6 +29,8 @@ router.get('/modify', rootController.modifyUser);
 router.get('/manage', rootController.manage);
 // Get '/root/edit/id'
 router.get('/edit/:id', rootController.bookEdit);
+// GET 'user/userList'
+router.get('/modify', rootController.modifyUser);
 
 // POST '/root/addBook'
 router.post(
@@ -51,5 +55,12 @@ router.put(
 // DELETE "/project/:id"
 router.delete('/:id', rootController.deleteBook);
 // Exporto este tramo de ruta
+
+// PUT '/user/modify
+router.put(
+  '/modify',
+  ValidateFactory(userValidator.modify),
+  rootController.postModify
+);
 
 export default router;
