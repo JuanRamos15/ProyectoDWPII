@@ -1,6 +1,10 @@
 {{> navbarRoot}}
 
 <h1>Listado de Libros</h1>
+<form action="/root/listBooks" method="GET" style="display: flex; gap: 10px;">
+  <input type="text" name="query" placeholder="Buscar libros por Titulo o Autor o Categoria..." style="padding: 10px; flex-grow: 1;">
+  <button type="submit" style="padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer;">Buscar</button>
+</form>
 <div class="row">
   {{#each books}}
     <div class="col s12 m6 l4">

@@ -15,8 +15,27 @@ const addBook = (req, res) => {
 // GET '/root/listBooks'
 const listBooks = async (req, res) => {
   log.info('Se entrega la lista de libros registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el titulo autor o categoria: ${query}`);
   // Consulta los libros
-  const books = await BookModel.find({}).lean().exec();
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${books.length} libros`);
   // Se entrega la vista dashboardView con el viewmodel projects
   res.render('root/listBooks', { books });
 };
