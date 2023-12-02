@@ -197,10 +197,10 @@ const postModify = async (req, res) => {
   const { validData: newUser } = req;
   // Se actualizan los datos del usuario
   user.firstName = newUser.firstName;
-  user.lastName = newUser.lastName;
+  user.lastname = newUser.lastname;
   user.studentId = newUser.studentId;
   user.major = newUser.major;
-  user.email = newUser.email;
+  user.mail = newUser.mail;
   try {
     // Se guarda el usuario actualizado
     await user.save();
