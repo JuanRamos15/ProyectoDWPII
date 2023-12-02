@@ -79,6 +79,19 @@ const userList = async (req, res) => {
   // Se entrega la vista dashboardView con el viewmodel users
   res.render('root/userList', { users });
 };
+const deleteUser = async (req, res) => {
+  // Extrayendo el id de los parametros
+  const { id } = req.params;
+  // Usando el modelo para borrar el proyecto
+  try {
+    const result = await User.findByIdAndRemove(id);
+    // Agregando mensaje de flash
+    req.flash('successMessage', 'Usuario borrado con exito');
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 // GET 'put'/modifyUser'
 const modifyUser = async (req, res) => {
@@ -293,6 +306,7 @@ export default {
   userList,
   modifyUser,
   modifyUserPut,
+  deleteUser,
   manage,
   addBookPost,
   bookEdit,
