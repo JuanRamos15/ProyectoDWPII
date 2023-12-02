@@ -56,8 +56,27 @@ const reserveBook = (req, res) => {
 };
 const userList = async (req, res) => {
   log.info('Se entrega la lista de usuarios registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando usuarios con el nombre o ID: ${query}`);
   // Consulta los usuarios
-  const users = await User.find({}).lean().exec();
+  let users;
+  if (query) {
+    // Si se proporcionó una consulta, busca usuarios que coincidan con ese nombre o ID
+    users = await User.find({
+      $or: [
+        { studentId: new RegExp(query, 'i') },
+        { firstName: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los usuarios
+    users = await User.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${users.length} usuarios`);
+  // Se entrega la vista dashboardView con el viewmodel users
   res.render('root/userList', { users });
 };
 
