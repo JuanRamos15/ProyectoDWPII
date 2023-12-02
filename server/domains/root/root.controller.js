@@ -35,77 +35,22 @@ const reserveBook = (req, res) => {
   log.info('Se entrega formulario de reserva de libro');
   res.render('root/reserveBook');
 };
-// GET 'root'/modifyUser'
-const modifyUser = async (req, res) => {
-  log.info('Se entrega formulario de modificacion de usuario');
+const userList = async (req, res) => {
   log.info('Se entrega la lista de usuarios registrados en el sistema');
-  // Obtén la consulta del request
-  const { query } = req.query;
-  log.info(`Buscando usuarios con el nombre o apellido: ${query}`);
   // Consulta los usuarios
-  let users;
-  if (query) {
-    // Si se proporcionó una consulta, busca usuarios que coincidan con ese nombre o apellido
-    users = await User.find({
-      $or: [
-        { firstName: new RegExp(query, 'i') },
-        { lastname: new RegExp(query, 'i') },
-      ],
-    })
-      .lean()
-      .exec();
-  } else {
-    // Si no se proporcionó ninguno, obtén todos los usuarios
-    users = await User.find({}).lean().exec();
-  }
-  log.info(`Encontrados ${users.length} usuarios`);
-  // Se entrega la vista dashboardView con el viewmodel projects
-  res.render('root/modify', { users });
+  const users = await User.find({}).lean().exec();
+  res.render('root/userList', { users });
 };
 
-// PUT '/user/modify'
-const postModify = async (req, res) => {
-  const { studentId } = req.session;
-  // Rescatando la información del formulario
-  const { errorData: validationError } = req;
-  // En caso de haber errores
-  if (validationError) {
-    log.info(`Error de validacion del usuario con ID: ${studentId}`);
-    // Se desestructura el error
-    const { value: user } = validationError;
-    // Se extraen los campos que fallaron en la validación
-    const errorModel = validationError.inner.reduce((prev, curr) => {
-      // Creando una variable temporal para
-      // evitar el error "no-param-reassing"
-      const workingPrev = prev;
-      workingPrev[`${curr.path}`] = curr.message;
-      return workingPrev;
-    }, {});
-    return res.status(422).render('user/modify', { user, errorModel });
-  }
-  // Si no hay errores
-  const user = await User.findOne({ studentId });
-  if (user === null) {
-    log.info(`No se encontro el usuario con el ID: ${studentId}`);
-    return res.status(404).send('No se encontro el usuario');
-  }
-  // En caso de encontrarse el documento se actualizan los datos
-  const { validData: newUser } = req;
-  // Se actualizan los datos del usuario
-  user.firstName = newUser.firstName;
-  user.lastname = newUser.lastname;
-  user.studentId = newUser.studentId;
-  user.major = newUser.major;
-  user.mail = newUser.mail;
+// GET 'put'/modifyUser'
+const modifyUser = async (req, res) => {
   try {
-    // Se guarda el usuario actualizado
-    await user.save();
-    log.info(`Se actualizo el usuario con ID: ${studentId}`);
-    // Se redirecciona a la pagina de modificacion
-    return res.status(200).redirect('/user/userHome');
+    // Se extrae el id de los parametros
+    const user = await User.findById(req.params.id);
+    log.info('Se entrega formulario de modificacion de usuario');
+    res.render('root/modifyUser', { user });
   } catch (error) {
-    log.error(`Error al actualizar el usuario con ID: ${studentId}`);
-    return res.status(500).json(error);
+    log.error(`Error al buscar el usuario con el id: ${req.params.id}`);
   }
 };
 
@@ -166,14 +111,14 @@ const bookEdit = async (req, res) => {
   const { id } = req.params;
   // Buscando en la base de datos
   try {
-    log.info(`Se inicia la busqueda del proyecto con el id: ${id}`);
+    log.info(`Se inicia la busqueda del libro con el id: ${id}`);
     const book = await BookModel.findOne({ _id: id }).lean().exec();
     if (book === null) {
-      log.info(`No se encontro el proyecto con el id: ${id}`);
-      return res.status(404).json({ message: 'No se encontro el proyecto' });
+      log.info(`No se encontro el libro con el id: ${id}`);
+      return res.status(404).json({ message: 'No se encontro el libro' });
     }
     // Se manda a renderizar la vista de edicion
-    log.info(`Se encontro el proyecto con el id: ${id}`);
+    log.info(`Se encontro el libro con el id: ${id}`);
     return res.render('root/editBook', { book });
   } catch (error) {
     log.error(`Error al buscar el proyecto con el id: ${id}`);
@@ -237,9 +182,54 @@ const deleteBook = async (req, res) => {
   try {
     const result = await BookModel.findByIdAndRemove(id);
     // Agregando mensaje de flash
-    req.flash('successMessage', 'Proyecto borrado con exito');
+    req.flash('successMessage', 'Libro borrado con exito');
     return res.status(200).json(result);
   } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+// PUT '/user/modify
+const modifyUserPut = async (req, res) => {
+  const { id } = req.params;
+  // Rescatando la informacion del formulario
+  const { errorData: validationError } = req;
+  // En caso de haber error
+  if (validationError) {
+    log.info(
+      `Se entrega al cliente error de validación de edit Book con el id: ${id}`
+    );
+    // Se desestructuran los datos de validación
+    const { value: user } = validationError;
+    // Se extraen los campos que fallaron en la validación
+    const errorModel = validationError.inner.reduce((prev, curr) => {
+      // Creando una variable temporal para
+      // evitar el error "no-param-reassing"
+      const workingPrev = prev;
+      workingPrev[`${curr.path}`] = curr.message;
+      return workingPrev;
+    }, {});
+    return res.status(422).render('root/editBook', { user, errorModel });
+  }
+  // Si no hay error
+  const user = await User.findOne({ _id: id }).lean().exec();
+  if (user === null) {
+    log.info(`No se encontro el usuario con el id: ${id}`);
+    return res.status(404).send('No se encontro el usuario');
+  }
+  // En caso de encontrarse el documento se actualizan los datos
+  const { validData: newUser } = req;
+  user.name = newUser.name;
+  user.lastName = newUser.lastName;
+  user.email = newUser.email;
+  try {
+    // Se salvan los cambios
+    log.info(`Se actualizo el usuario con el id: ${id}`);
+    await user.save();
+    return res.redirect('/root/userList');
+  } catch (error) {
+    log.error(`Error al actualizar el usuario con el id: ${id}`);
+    // Agregando mensaje de flash
+    req.flash('errorMessage', 'Error al actualizar el usuario');
     return res.status(500).json(error);
   }
 };
@@ -252,8 +242,9 @@ export default {
   penalties,
   loan,
   reserveBook,
+  userList,
   modifyUser,
-  postModify,
+  modifyUserPut,
   manage,
   addBookPost,
   bookEdit,
