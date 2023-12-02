@@ -1,6 +1,7 @@
 import log from '../../config/winston';
 // Importando el modelo
 import BookModel from './bookRoot.model';
+import User from '../user/user.model';
 
 // import root from './book.model';
 const rootNav = (request, response) => {
@@ -35,9 +36,31 @@ const reserveBook = (req, res) => {
   res.render('root/reserveBook');
 };
 // GET 'root'/modifyUser'
-const modifyUser = (req, res) => {
+const modifyUser = async (req, res) => {
   log.info('Se entrega formulario de modificacion de usuario');
-  res.render('root/modify');
+  log.info('Se entrega la lista de usuarios registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando usuarios con el nombre o apellido: ${query}`);
+  // Consulta los usuarios
+  let users;
+  if (query) {
+    // Si se proporcionó una consulta, busca usuarios que coincidan con ese nombre o apellido
+    users = await User.find({
+      $or: [
+        { firstName: new RegExp(query, 'i') },
+        { lastname: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los usuarios
+    users = await User.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${users.length} usuarios`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('root/modify', { users });
 };
 // GET '/root/manage'
 const manage = (req, res) => {

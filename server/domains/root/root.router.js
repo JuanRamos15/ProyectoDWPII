@@ -27,6 +27,8 @@ router.get('/modify', rootController.modifyUser);
 router.get('/manage', rootController.manage);
 // Get '/root/edit/id'
 router.get('/edit/:id', rootController.bookEdit);
+// GET 'user/userList'
+router.get('/modify', rootController.modifyUser);
 
 // POST '/root/addBook'
 router.post(
