@@ -1,7 +1,10 @@
+import PDFDocument from 'pdfkit';
 import log from '../../config/winston';
 // Importando el modelo
 import BookModel from './bookRoot.model';
 import User from '../user/user.model';
+
+const fs = require('fs');
 
 // import root from './book.model';
 const rootNav = (request, response) => {
@@ -79,6 +82,47 @@ const userList = async (req, res) => {
   // Se entrega la vista dashboardView con el viewmodel users
   res.render('root/userList', { users });
 };
+
+// GET '/root/bookReport'
+const bookReport = (req, res) => {
+  res.render('root/bookReport');
+};
+
+// POST '/root/bookReport'
+const bookReportPost = async (req, res) => {
+  log.info('Ingresando al reporte de libro');
+  // Recupera todos los libros de la base de datos
+  const books = await BookModel.find();
+
+  // Crea un nuevo documento PDF
+  const doc = new PDFDocument();
+
+  // Escribe en el documento PDF
+  doc.fontSize(25).text('Reporte de libros', 50, 50);
+
+  let y = 100;
+  books.forEach((book) => {
+    doc.fontSize(20).text(`Título: ${book.bookTitle}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Autor: ${book.bookAuthor}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Descripción: ${book.bookISBN}`, 50, y);
+    y += 30;
+  });
+  doc.end();
+  // Guarda el documento PDF en un archivo
+  const stream = doc.pipe(fs.createWriteStream('C:\Users\lower\OneDrive\Escritorio\miReporte.pdf')); // Reemplaza esto con la ruta donde quieres guardar el PDF
+
+  stream.on('finish', () => {
+    // Finaliza el documento PDF
+    doc.end();
+    log.info('Se termina el reporte de libro');
+    // Envía el PDF como respuesta
+    res.download('C:\Users\lower\OneDrive\Escritorio\miReporte.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
+  });
+};
+
+// DELETE user con root
 const deleteUser = async (req, res) => {
   // Extrayendo el id de los parametros
   const { id } = req.params;
@@ -304,4 +348,6 @@ export default {
   bookEdit,
   deleteBook,
   editPut,
+  bookReport,
+  bookReportPost,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import bcrypt from 'bcrypt';
 import log from '../../config/winston';
 import User from './user.model';
@@ -160,32 +161,140 @@ const registerPost = async (req, res) => {
 // Prestamo de libro
 // POST '/user/loan'
 const postLoan = async (req, res) => {
-  // Se obtiene el studentId del usuario
-  const { studentId } = req.session;
-  log.info('Se solicita préstamo de libro');
-  // Obtén el ID del libro del request
-  const { id } = req.body;
-  // Busca el libro en la base de datos
-  const book = await BookModel.findById(id);
-  // Verifica si hay copias disponibles
-  if (book.bookQuantity > 0) {
-    // Reduce la cantidad de libros en 1
-    book.bookQuantity -= 1;
-    // Busca al usuario por studentId
-    const user = await User.findOne({ studentId });
-    // Verifica si el usuario existe
-    if (!user) {
-      return res.send('Usuario no encontrado');
+  try {
+    // Se obtiene el userId del usuario
+    const { userId } = req.session;
+    log.info('Se solicita préstamo de libro');
+
+    // Obtén el ID del libro del request
+    const { id } = req.body;
+
+    // Busca el libro en la base de datos
+    const book = await BookModel.findById(id);
+
+    // Verifica si hay copias disponibles y el libro no está prestado
+    if (book.bookQuantity > 0 && !book.borrowedBy) {
+      // Verifica si el usuario ya tiene prestada una copia del mismo libro
+      const userHasBook = await BookModel.exists({
+        _id: id, // Busca el libro actual
+        borrowedBy: userId,
+      });
+
+      if (userHasBook) {
+        return res.send('Ya tienes una copia de este libro prestada.');
+      }
+
+      // Reduce la cantidad de libros en 1
+      book.bookQuantity -= 1;
+
+      // Busca al usuario por userId
+      const user = await User.findById(userId);
+
+      // Verifica si el usuario existe
+      if (!user) {
+        return res.send('Usuario no encontrado');
+      }
+
+      // Establece el campo borrowedBy al userId del usuario
+      book.borrowedBy = user._id;
+
+      // Establece la fecha de inicio y final del préstamo
+      book.startDate = new Date();
+      book.returnDate = new Date();
+      book.returnDate.setMinutes(book.returnDate.getMinutes() + 30);
+
+      // Guarda el libro en la base de datos
+      await book.save();
+
+      // Informa al cliente que el préstamo fue exitoso
+      log.info('El préstamo fue exitoso');
+      return res.render('user/listBooks', { book });
     }
-    // Establece el campo borrowedBy al studentId del usuario
-    book.borrowedBy = user.studentId;
-    // Guarda el libro en la base de datos
-    await book.save();
-    // Informa al cliente que el préstamo fue exitoso
-    return res.send('El préstamo fue exitoso');
+
+    // Informa al cliente que no hay copias disponibles o el libro está prestado
+    log.info('No hay copias disponibles o el libro está prestado');
+    return res.render('user/listBooks');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
   }
-  // Informa al cliente que no hay copias disponibles
-  return res.send('No hay copias disponibles');
+};
+
+// Devolución de libro
+// POST '/user/return'
+const postReturn = async (req, res) => {
+  try {
+    // Se obtiene el userId del usuario
+    const { userId } = req.session;
+    log.info('Se solicita devolución de libro');
+
+    // Obtén el ID del libro del request
+    const { id } = req.body;
+
+    // Busca el libro en la base de datos
+    const book = await BookModel.findById(id);
+
+    // Verifica si el libro está prestado por el usuario
+    if (book.borrowedBy && book.borrowedBy.toString() === userId) {
+      // Incrementa la cantidad de libros en 1
+      book.bookQuantity += 1;
+
+      // Elimina el campo borrowedBy
+      book.borrowedBy = null;
+
+      // Agrega el userId al campo returnedBy
+      book.returnedBy = userId;
+
+      // Elimina las fechas de inicio y final del préstamo
+      book.startDate = null;
+      book.returnDate = null;
+
+      // Guarda el libro en la base de datos
+      await book.save();
+
+      // Informa al cliente que la devolución fue exitosa
+      log.info('La devolución fue exitosa');
+      return res.render('user/listBooks', { book });
+    }
+
+    // Informa al cliente que el libro no está prestado por el usuario
+    log.info('El libro no está prestado por el usuario');
+    return res.render('user/listBooks');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
+// GET '/root/listBooks'
+const listLoanBooks = async (req, res) => {
+  log.info('Se entrega la lista de libros prestados');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el ISBN o título: ${query}`);
+  // Obtén el userId del usuario
+  const { userId } = req.session;
+  // Consulta los libros
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+      borrowedBy: userId, // Solo busca libros prestados por el usuario actual
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({ borrowedBy: userId }).lean().exec(); // Solo busca libros prestados por el usuario actual
+  }
+  log.info(`Encontrados ${books.length} libros`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('user/listLoanBooks', { books });
 };
 
 // PUT '/user/modify'
@@ -249,5 +358,7 @@ export default {
   reserveBook,
   modify,
   postLoan,
+  listLoanBooks,
+  postReturn,
   postModify,
 };

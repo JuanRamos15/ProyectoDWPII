@@ -1,0 +1,31 @@
+<!-- user/loans.handlebars -->
+{{> navbarUser}}
+
+<h1>Listado de Préstamos</h1>
+
+<div class="row">
+  {{#each books}}
+    <div class="col s12 m6 l4">
+      <div class="card horizontal">
+        <div class="card-stacked">
+          <div class="card-content">
+            <span class="card-title">{{this.bookTitle}}</span>
+            <p>{{this.bookAuthor}}</p>
+            <p>{{this.bookCategory}}</p>
+            <p>Fecha de Inicio: {{this.startDate}}</p>
+            <p>Fecha de Caducidad: {{this.returnDate}}</p>
+          </div>
+          <div class="card-action">
+            <!-- Formulario para devolver el libro -->
+            <form action="/user/return" method="post">
+              <input type="hidden" name="id" value="{{this._id}}">
+              <button type="submit" class="btn">Devolver libro</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <p>No tienes libros prestados actualmente.</p>
+  {{/each}}
+</div>

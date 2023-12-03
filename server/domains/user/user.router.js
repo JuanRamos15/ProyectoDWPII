@@ -33,7 +33,9 @@ router.get('/listBooks', userController.listBooks);
 router.get('/Penalties', userController.Penalties);
 
 // GET '/user/loan'
-router.get('/loan', userController.loan);
+router.get('/listLoanBooks', userController.listLoanBooks);
+// GET listLoanBooks'
+router.get('/listLoanBooks', userController.listLoanBooks);
 
 // GET '/user/reserveBook'
 router.get('/reserveBook', userController.reserveBook);
@@ -64,6 +66,8 @@ router.post(
 
 // POST '/user/loan
 router.post('/loan', userController.postLoan);
+// POST '/user/return
+router.post('/return', userController.postReturn);
 
 // PUT '/user/modify
 router.put(
