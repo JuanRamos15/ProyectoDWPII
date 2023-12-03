@@ -15,8 +15,27 @@ const addBook = (req, res) => {
 // GET '/root/listBooks'
 const listBooks = async (req, res) => {
   log.info('Se entrega la lista de libros registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el titulo autor o categoria: ${query}`);
   // Consulta los libros
-  const books = await BookModel.find({}).lean().exec();
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${books.length} libros`);
   // Se entrega la vista dashboardView con el viewmodel projects
   res.render('root/listBooks', { books });
 };
@@ -37,9 +56,41 @@ const reserveBook = (req, res) => {
 };
 const userList = async (req, res) => {
   log.info('Se entrega la lista de usuarios registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando usuarios con el nombre o ID: ${query}`);
   // Consulta los usuarios
-  const users = await User.find({}).lean().exec();
+  let users;
+  if (query) {
+    // Si se proporcionó una consulta, busca usuarios que coincidan con ese nombre o ID
+    users = await User.find({
+      $or: [
+        { studentId: new RegExp(query, 'i') },
+        { firstName: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los usuarios
+    users = await User.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${users.length} usuarios`);
+  // Se entrega la vista dashboardView con el viewmodel users
   res.render('root/userList', { users });
+};
+const deleteUser = async (req, res) => {
+  // Extrayendo el id de los parametros
+  const { id } = req.params;
+  // Usando el modelo para borrar el proyecto
+  try {
+    const result = await User.findByIdAndRemove(id);
+    // Agregando mensaje de flash
+    req.flash('successMessage', 'Usuario borrado con exito');
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 };
 
 // GET 'put'/modifyUser'
@@ -62,13 +113,6 @@ const modifyUser = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
-// GET '/root/manage'
-const manage = (req, res) => {
-  log.info('Se entrega formulario de modificacion de usuario');
-  res.send('root/manage');
-};
-
 // POST "/root/addBook"
 const addBookPost = async (req, res) => {
   // Rescatando la info del formulario
@@ -255,7 +299,7 @@ export default {
   userList,
   modifyUser,
   modifyUserPut,
-  manage,
+  deleteUser,
   addBookPost,
   bookEdit,
   deleteBook,

@@ -26,8 +26,6 @@ router.get('/loan', rootController.loan);
 router.get('/reserveBook', rootController.reserveBook);
 // Get '/root/modifyUser'
 router.get('/modify', rootController.listBooks);
-// GET '/root/manage'
-router.get('/manage', rootController.manage);
 // Get '/root/edit/id'
 router.get('/edit/:id', rootController.bookEdit);
 // GET '/root/userList'
@@ -68,5 +66,7 @@ router.put(
   }),
   rootController.modifyUserPut
 );
+// DELETE "/project/:id"
+router.delete('/:id', rootController.deleteUser);
 
 export default router;

@@ -45,7 +45,7 @@ router.get('/modify', userController.modify);
 router.post(
   '/register',
   ValidateFactory({
-    schema: userValidator.getSignUp,
+    schema: userValidator.signUpSchema,
     getObject: userValidator.getSignUp,
   }),
   userController.registerPost
