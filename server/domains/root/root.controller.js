@@ -113,13 +113,6 @@ const modifyUser = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
-// GET '/root/manage'
-const manage = (req, res) => {
-  log.info('Se entrega formulario de modificacion de usuario');
-  res.send('root/manage');
-};
-
 // POST "/root/addBook"
 const addBookPost = async (req, res) => {
   // Rescatando la info del formulario
@@ -307,7 +300,6 @@ export default {
   modifyUser,
   modifyUserPut,
   deleteUser,
-  manage,
   addBookPost,
   bookEdit,
   deleteBook,
