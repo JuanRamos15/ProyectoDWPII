@@ -34,6 +34,8 @@ router.get('/Penalties', userController.Penalties);
 
 // GET '/user/loan'
 router.get('/loan', userController.loan);
+// GET listLoanBooks'
+router.get('/listLoanBooks', userController.listLoanBooks);
 
 // GET '/user/reserveBook'
 router.get('/reserveBook', userController.reserveBook);

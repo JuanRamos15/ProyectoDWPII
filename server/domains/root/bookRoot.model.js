@@ -29,6 +29,12 @@ const BookSchema = new Schema({
     type: String,
     ref: 'User',
   },
+  startDate: {
+    type: Date,
+  },
+  returnDate: {
+    type: Date,
+  },
 });
 
 // copilando el schema

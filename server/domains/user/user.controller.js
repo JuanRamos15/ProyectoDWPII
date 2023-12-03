@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import bcrypt from 'bcrypt';
 import log from '../../config/winston';
 import User from './user.model';
@@ -160,33 +161,90 @@ const registerPost = async (req, res) => {
 // Prestamo de libro
 // POST '/user/loan'
 const postLoan = async (req, res) => {
-  // Se obtiene el userId del usuario
-  const { userId } = req.session;
-  log.info('Se solicita préstamo de libro');
-  // Obtén el ID del libro del request
-  const { id } = req.body;
-  // Busca el libro en la base de datos
-  const book = await BookModel.findById(id);
-  // Verifica si hay copias disponibles
-  if (book.bookQuantity > 0) {
-    // Reduce la cantidad de libros en 1
-    book.bookQuantity -= 1;
-    // Busca al usuario por userId
-    const user = await User.findById(userId);
-    // Verifica si el usuario existe
-    if (!user) {
-      return res.send('Usuario no encontrado');
+  try {
+    // Se obtiene el userId del usuario
+    const { userId } = req.session;
+    log.info('Se solicita préstamo de libro');
+
+    // Obtén el ID del libro del request
+    const { id, startDate, returnDate } = req.body;
+
+    // Busca el libro en la base de datos
+    const book = await BookModel.findById(id);
+
+    // Verifica si hay copias disponibles y el libro no está prestado
+    if (book.bookQuantity > 0 && !book.borrowedBy) {
+      // Verifica si el usuario ya tiene prestada una copia del mismo libro
+      const userHasBook = await BookModel.exists({
+        _id: id, // Busca el libro actual
+        borrowedBy: userId,
+      });
+
+      if (userHasBook) {
+        return res.send('Ya tienes una copia de este libro prestada.');
+      }
+
+      // Reduce la cantidad de libros en 1
+      book.bookQuantity -= 1;
+
+      // Busca al usuario por userId
+      const user = await User.findById(userId);
+
+      // Verifica si el usuario existe
+      if (!user) {
+        return res.send('Usuario no encontrado');
+      }
+
+      // Establece el campo borrowedBy al userId del usuario
+      book.borrowedBy = user._id;
+
+      // Agrega las fechas de inicio y fin al préstamo
+      book.startDate = startDate;
+      book.returnDate = returnDate;
+
+      // Guarda el libro en la base de datos
+      await book.save();
+
+      // Informa al cliente que el préstamo fue exitoso
+      log.info('El préstamo fue exitoso');
+      return res.render('user/listBooks');
     }
-    // Establece el campo borrowedBy al userId del usuario
-    // eslint-disable-next-line no-underscore-dangle
-    book.borrowedBy = user._id;
-    // Guarda el libro en la base de datos
-    await book.save();
-    // Informa al cliente que el préstamo fue exitoso
-    return res.send('El préstamo fue exitoso');
+
+    // Informa al cliente que no hay copias disponibles o el libro está prestado
+    log.info('No hay copias disponibles o el libro está prestado');
+    return res.render('user/listBooks');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
   }
-  // Informa al cliente que no hay copias disponibles
-  return res.send('No hay copias disponibles');
+};
+
+// GET '/root/listBooks'
+const listLoanBooks = async (req, res) => {
+  log.info('Se entrega la lista de libros prestados');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el ISBN o título: ${query}`);
+  // Consulta los libros
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${books.length} libros`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('user/listLoanBooks', { books });
 };
 
 // PUT '/user/modify'
@@ -250,5 +308,6 @@ export default {
   reserveBook,
   modify,
   postLoan,
+  listLoanBooks,
   postModify,
 };
