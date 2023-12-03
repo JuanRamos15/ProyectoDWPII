@@ -32,6 +32,10 @@ router.get('/edit/:id', rootController.bookEdit);
 router.get('/userList', rootController.userList);
 // GET 'root/userList'
 router.get('/modifyUser/:id', rootController.modifyUser);
+// GET '/root/bookReport
+router.get('/bookReport', rootController.bookReport);
+// POST 'root/bookReport
+router.post('/bookReport', rootController.bookReportPost);
 
 // POST '/root/addBook'
 router.post(
@@ -54,10 +58,9 @@ router.put(
 );
 
 // DELETE "/project/:id"
-router.delete('/:id', rootController.deleteUser);
-
-// DELETE "/project/:id"
 router.delete('/:id', rootController.deleteBook);
+// DELETE "/project/:id"
+router.delete('/:id', rootController.deleteUser);
 
 // PUT '/user/modify
 router.put(

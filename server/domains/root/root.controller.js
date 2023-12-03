@@ -1,3 +1,4 @@
+import puppeter from 'puppeteer';
 import log from '../../config/winston';
 // Importando el modelo
 import BookModel from './bookRoot.model';
@@ -78,6 +79,35 @@ const userList = async (req, res) => {
   log.info(`Encontrados ${users.length} usuarios`);
   // Se entrega la vista dashboardView con el viewmodel users
   res.render('root/userList', { users });
+};
+
+// GET '/root/bookReport'
+const bookReport = (req, res) => {
+  res.render('root/bookReport');
+};
+
+// POST '/root/bookReport'
+const bookReportPost = async (req, res) => {
+  // Recupera todos los libros de la base de datos
+  const books = await BookModel.find();
+  // Formatea los datos de los libros
+  let html = '<h1>Reporte de libros</h1>';
+  books.forEach((book) => {
+    html += `<h2>${book.title}</h2><p>${book.author}</p><p>${book.description}</p>`;
+  });
+  // Lanza una nueva instancia de navegador
+  const browser = await puppeter.launch();
+  // Abre una nueva página en el navegador
+  const page = await browser.newPage();
+  // Configura el contenido de la página
+  await page.setContent(html);
+  // Genera el PDF
+  const pdf = await page.pdf({ format: 'A4' });
+  // Cierra el navegador
+  await browser.close();
+  // Envía el PDF como respuesta
+  res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length });
+  res.send(pdf);
 };
 
 // DELETE user con root
@@ -306,4 +336,6 @@ export default {
   bookEdit,
   deleteBook,
   editPut,
+  bookReport,
+  bookReportPost,
 };
