@@ -11,6 +11,10 @@ console.log(process.env.PORT);
 const defaultConfig = {
   PORT: process.env.PORT || 3000,
   IP: process.env.IP || '0.0.0.0',
+  MAIL_USERNAME: process.env.MAIL_USERNAME,
+  MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
 };
 
 const devConfig = {

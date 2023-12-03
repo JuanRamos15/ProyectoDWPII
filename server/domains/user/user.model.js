@@ -5,6 +5,10 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import log from '../../config/winston';
+import configKeys from '../../config/configKeys';
+import MailSender from '../../services/mailSender';
+
 // 2. Desestructurando la fn Schema
 const { Schema } = mongoose;
 // 3. Creando el esquema
@@ -103,7 +107,54 @@ UserSchema.pre('save', function presave(next) {
   if (this.isModified('password')) {
     this.password = this.hashPassword();
   }
+  // Creando el token de confirmacion
+  this.emailConfirmationToken = this.generateConfirmationToken();
   return next();
+});
+
+UserSchema.post('save', async function sendConfirmationMail() {
+  // Creating Mail options
+  const options = {
+    host: configKeys.SMTP_HOST,
+    port: configKeys.SMTP_PORT,
+    secure: false,
+    auth: {
+      user: configKeys.MAIL_USERNAME,
+      pass: configKeys.MAIL_PASSWORD,
+    },
+  };
+
+  const mailSender = new MailSender(options);
+
+  // Configuring mail data
+  mailSender.mail = {
+    from: 'BibloTec@gamadero.tecnm.mx',
+    to: this.mail,
+    subject: 'Account confirmation',
+  };
+
+  try {
+    const info = await mailSender.sendMail(
+      'confirmation',
+      {
+        user: this.firstName,
+        lastname: this.lastname,
+        mail: this.mail,
+        token: this.emailConfirmationToken,
+      },
+      `
+      Estimado ${this.firstName} ${this.lastname}  
+      hemos enviado un correo de confirmación a ${this.mail}  
+      favor de hacer clic en enlace de dicho correo`
+    );
+
+    if (!info) return log.info('😭 No se pudo enviar el correo');
+    log.info('🎉 Correo enviado con exito');
+    return info;
+  } catch (error) {
+    log.error(`🚨 ERROR al enviar correo: ${error.message}`);
+    return null;
+  }
 });
 
 // 4. Compilando el modelo y exportándolo
