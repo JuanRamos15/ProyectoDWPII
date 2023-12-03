@@ -109,6 +109,64 @@ BookSchema.post('save', async function sendLoanMail() {
   }
 });
 
+BookSchema.post('save', async function sendReturnMail() {
+  // Solo envía el correo si el libro ha sido devuelto
+  if (this.borrowedBy || this.bookQuantity === 0) {
+    return;
+  }
+
+  // Busca al usuario que devolvió el libro
+  const user = await mongoose.model('user').findById(this.returnedBy);
+
+  // Verifica si el usuario existe
+  if (!user) {
+    return;
+  }
+
+  // Creando opciones de correo
+  const options = {
+    host: configKeys.SMTP_HOST,
+    port: configKeys.SMTP_PORT,
+    secure: false,
+    auth: {
+      user: configKeys.MAIL_USERNAME,
+      pass: configKeys.MAIL_PASSWORD,
+    },
+  };
+
+  const mailSender = new MailSender(options);
+
+  // Configurando datos de correo
+  mailSender.mail = {
+    from: 'BibloTec@gamadero.tecnm.mx',
+    to: user.mail,
+    subject: 'Devolución de libro',
+  };
+
+  try {
+    const info = await mailSender.sendMail(
+      'return',
+      {
+        user: user.firstName,
+        lastname: user.lastname,
+        mail: user.mail,
+        bookTitle: this.bookTitle,
+      },
+      `
+      Estimado ${user.firstName} ${user.lastName}  
+      has devuelto el libro ${this.bookTitle}.  
+      Gracias por utilizar nuestro servicio.`
+    );
+
+    if (!info) return log.info('😭 No se pudo enviar el correo');
+    log.info('🎉 Correo enviado con exito');
+    return info;
+  } catch (error) {
+    log.error(`🚨 ERROR al enviar correo: ${error.message}`);
+    return null;
+  }
+});
+
 // copilando el schema
 // genera el modelo
 export default mongoose.model('book', BookSchema);

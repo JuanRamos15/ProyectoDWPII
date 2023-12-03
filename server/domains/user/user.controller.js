@@ -242,6 +242,9 @@ const postReturn = async (req, res) => {
       // Elimina el campo borrowedBy
       book.borrowedBy = null;
 
+      // Agrega el userId al campo returnedBy
+      book.returnedBy = userId;
+
       // Elimina las fechas de inicio y final del préstamo
       book.startDate = null;
       book.returnDate = null;
