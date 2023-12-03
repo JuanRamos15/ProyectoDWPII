@@ -83,12 +83,12 @@ const userList = async (req, res) => {
   res.render('root/userList', { users });
 };
 
-// GET '/root/bookReport'
+// GET '/root/reports'
 const bookReport = (req, res) => {
-  res.render('root/bookReport');
+  res.render('root/reports');
 };
 
-// POST '/root/bookReport'
+// POST '/root/reports'
 const bookReportPost = async (req, res) => {
   log.info('Ingresando al reporte de libro');
   // Recupera todos los libros de la base de datos
@@ -106,19 +106,65 @@ const bookReportPost = async (req, res) => {
     y += 20;
     doc.fontSize(15).text(`Autor: ${book.bookAuthor}`, 50, y);
     y += 20;
-    doc.fontSize(15).text(`Descripción: ${book.bookISBN}`, 50, y);
+    doc.fontSize(15).text(`ISBN: ${book.bookISBN}`, 50, y);
     y += 30;
+    doc.fontSize(15).text(`Categoría: ${book.bookCategory}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Cantidad: ${book.bookQuantity}`, 50, y);
+    y += 50;
   });
   doc.end();
   // Guarda el documento PDF en un archivo
-  const stream = doc.pipe(fs.createWriteStream('C:\Users\lower\OneDrive\Escritorio\miReporte.pdf')); // Reemplaza esto con la ruta donde quieres guardar el PDF
+  // eslint-disable-next-line
+  const stream = doc.pipe(fs.createWriteStream('C:\Users\lower\OneDrive\Escritorio\Reporte-Libros.pdf')); // Reemplaza esto con la ruta donde quieres guardar el PDF
 
   stream.on('finish', () => {
     // Finaliza el documento PDF
     doc.end();
     log.info('Se termina el reporte de libro');
     // Envía el PDF como respuesta
-    res.download('C:\Users\lower\OneDrive\Escritorio\miReporte.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
+    // eslint-disable-next-line
+    res.download('C:\Users\lower\OneDrive\Escritorio\Reporte-Libros.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
+  });
+};
+
+// POST '/root/userReportPost
+const userReportPost = async (req, res) => {
+  log.info('Ingresando al reporte de Usuarios');
+  // Recupera todos los libros de la base de datos
+  const users = await User.find();
+
+  // Crea un nuevo documento PDF
+  const doc = new PDFDocument();
+
+  // Escribe en el documento PDF
+  doc.fontSize(25).text('Reporte de Usuarios', 50, 50);
+
+  let y = 100;
+  users.forEach((user) => {
+    doc.fontSize(20).text(`Nombre/s: ${user.firstName}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Apellido/s: ${user.lastname}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Numero de control: ${user.studentId}`, 50, y);
+    y += 30;
+    doc.fontSize(15).text(`Carrera: ${user.major}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Correo: ${user.mail}`, 50, y);
+    y += 50;
+  });
+  doc.end();
+  // Guarda el documento PDF en un archivo
+  // eslint-disable-next-line
+  const stream = doc.pipe(fs.createWriteStream('C:\Users\lower\OneDrive\Escritorio\Reporte-Usuarios.pdf')); // Reemplaza esto con la ruta donde quieres guardar el PDF
+
+  stream.on('finish', () => {
+    // Finaliza el documento PDF
+    doc.end();
+    log.info('Se termina el reporte de libro');
+    // Envía el PDF como respuesta
+    // eslint-disable-next-line
+    res.download('C:\Users\lower\OneDrive\Escritorio\Usuarios-Libros.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
   });
 };
 
@@ -350,4 +396,5 @@ export default {
   editPut,
   bookReport,
   bookReportPost,
+  userReportPost,
 };
