@@ -160,8 +160,8 @@ const registerPost = async (req, res) => {
 // Prestamo de libro
 // POST '/user/loan'
 const postLoan = async (req, res) => {
-  // Se obtiene el studentId del usuario
-  const { studentId } = req.session;
+  // Se obtiene el userId del usuario
+  const { userId } = req.session;
   log.info('Se solicita préstamo de libro');
   // Obtén el ID del libro del request
   const { id } = req.body;
@@ -171,14 +171,15 @@ const postLoan = async (req, res) => {
   if (book.bookQuantity > 0) {
     // Reduce la cantidad de libros en 1
     book.bookQuantity -= 1;
-    // Busca al usuario por studentId
-    const user = await User.findOne({ studentId });
+    // Busca al usuario por userId
+    const user = await User.findById(userId);
     // Verifica si el usuario existe
     if (!user) {
       return res.send('Usuario no encontrado');
     }
-    // Establece el campo borrowedBy al studentId del usuario
-    book.borrowedBy = user.studentId;
+    // Establece el campo borrowedBy al userId del usuario
+    // eslint-disable-next-line no-underscore-dangle
+    book.borrowedBy = user._id;
     // Guarda el libro en la base de datos
     await book.save();
     // Informa al cliente que el préstamo fue exitoso

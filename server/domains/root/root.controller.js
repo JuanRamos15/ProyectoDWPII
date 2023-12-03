@@ -79,6 +79,8 @@ const userList = async (req, res) => {
   // Se entrega la vista dashboardView con el viewmodel users
   res.render('root/userList', { users });
 };
+
+// DELETE user con root
 const deleteUser = async (req, res) => {
   // Extrayendo el id de los parametros
   const { id } = req.params;

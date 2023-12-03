@@ -54,8 +54,10 @@ router.put(
 );
 
 // DELETE "/project/:id"
+router.delete('/:id', rootController.deleteUser);
+
+// DELETE "/project/:id"
 router.delete('/:id', rootController.deleteBook);
-// Exporto este tramo de ruta
 
 // PUT '/user/modify
 router.put(
@@ -66,7 +68,5 @@ router.put(
   }),
   rootController.modifyUserPut
 );
-// DELETE "/project/:id"
-router.delete('/:id', rootController.deleteUser);
 
 export default router;
