@@ -167,7 +167,7 @@ const postLoan = async (req, res) => {
     log.info('Se solicita préstamo de libro');
 
     // Obtén el ID del libro del request
-    const { id, startDate, returnDate } = req.body;
+    const { id } = req.body;
 
     // Busca el libro en la base de datos
     const book = await BookModel.findById(id);
@@ -198,16 +198,17 @@ const postLoan = async (req, res) => {
       // Establece el campo borrowedBy al userId del usuario
       book.borrowedBy = user._id;
 
-      // Agrega las fechas de inicio y fin al préstamo
-      book.startDate = startDate;
-      book.returnDate = returnDate;
+      // Establece la fecha de inicio y final del préstamo
+      book.startDate = new Date();
+      book.returnDate = new Date();
+      book.returnDate.setMinutes(book.returnDate.getMinutes() + 30);
 
       // Guarda el libro en la base de datos
       await book.save();
 
       // Informa al cliente que el préstamo fue exitoso
       log.info('El préstamo fue exitoso');
-      return res.render('user/listBooks');
+      return res.render('user/listBooks', { book });
     }
 
     // Informa al cliente que no hay copias disponibles o el libro está prestado

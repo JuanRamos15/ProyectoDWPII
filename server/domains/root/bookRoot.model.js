@@ -31,9 +31,16 @@ const BookSchema = new Schema({
   },
   startDate: {
     type: Date,
+    default: Date.now,
   },
   returnDate: {
     type: Date,
+    default: () => {
+      // Utiliza una función para calcular la fecha de devolución
+      const date = new Date();
+      date.setMinutes(date.getMinutes() + 30); // Añade 30 minutos a la fecha actual
+      return date;
+    },
   },
 });
 
