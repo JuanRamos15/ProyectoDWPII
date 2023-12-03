@@ -66,6 +66,8 @@ router.post(
 
 // POST '/user/loan
 router.post('/loan', userController.postLoan);
+// POST '/user/return
+router.post('/return', userController.postReturn);
 
 // PUT '/user/modify
 router.put(

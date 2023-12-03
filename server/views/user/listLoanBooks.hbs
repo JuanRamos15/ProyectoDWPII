@@ -16,7 +16,11 @@
             <p>Fecha de Caducidad: {{this.returnDate}}</p>
           </div>
           <div class="card-action">
-            <!-- Puedes añadir más detalles o acciones relacionadas con los préstamos aquí -->
+            <!-- Formulario para devolver el libro -->
+            <form action="/user/return" method="post">
+              <input type="hidden" name="id" value="{{this._id}}">
+              <button type="submit" class="btn">Devolver libro</button>
+            </form>
           </div>
         </div>
       </div>
@@ -25,4 +29,3 @@
     <p>No tienes libros prestados actualmente.</p>
   {{/each}}
 </div>
-

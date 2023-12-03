@@ -220,12 +220,57 @@ const postLoan = async (req, res) => {
   }
 };
 
+// Devolución de libro
+// POST '/user/return'
+const postReturn = async (req, res) => {
+  try {
+    // Se obtiene el userId del usuario
+    const { userId } = req.session;
+    log.info('Se solicita devolución de libro');
+
+    // Obtén el ID del libro del request
+    const { id } = req.body;
+
+    // Busca el libro en la base de datos
+    const book = await BookModel.findById(id);
+
+    // Verifica si el libro está prestado por el usuario
+    if (book.borrowedBy && book.borrowedBy.toString() === userId) {
+      // Incrementa la cantidad de libros en 1
+      book.bookQuantity += 1;
+
+      // Elimina el campo borrowedBy
+      book.borrowedBy = null;
+
+      // Elimina las fechas de inicio y final del préstamo
+      book.startDate = null;
+      book.returnDate = null;
+
+      // Guarda el libro en la base de datos
+      await book.save();
+
+      // Informa al cliente que la devolución fue exitosa
+      log.info('La devolución fue exitosa');
+      return res.render('user/listBooks', { book });
+    }
+
+    // Informa al cliente que el libro no está prestado por el usuario
+    log.info('El libro no está prestado por el usuario');
+    return res.render('user/listBooks');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
 // GET '/root/listBooks'
 const listLoanBooks = async (req, res) => {
   log.info('Se entrega la lista de libros prestados');
   // Obtén la consulta del request
   const { query } = req.query;
   log.info(`Buscando libros con el ISBN o título: ${query}`);
+  // Obtén el userId del usuario
+  const { userId } = req.session;
   // Consulta los libros
   let books;
   if (query) {
@@ -236,12 +281,13 @@ const listLoanBooks = async (req, res) => {
         { bookTitle: new RegExp(query, 'i') },
         { bookCategory: new RegExp(query, 'i') },
       ],
+      borrowedBy: userId, // Solo busca libros prestados por el usuario actual
     })
       .lean()
       .exec();
   } else {
     // Si no se proporcionó ninguno, obtén todos los libros
-    books = await BookModel.find({}).lean().exec();
+    books = await BookModel.find({ borrowedBy: userId }).lean().exec(); // Solo busca libros prestados por el usuario actual
   }
   log.info(`Encontrados ${books.length} libros`);
   // Se entrega la vista dashboardView con el viewmodel projects
@@ -310,5 +356,6 @@ export default {
   modify,
   postLoan,
   listLoanBooks,
+  postReturn,
   postModify,
 };
