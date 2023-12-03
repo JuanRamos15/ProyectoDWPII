@@ -1,8 +1,10 @@
-import puppeter from 'puppeteer';
+import PDFDocument from 'pdfkit';
 import log from '../../config/winston';
 // Importando el modelo
 import BookModel from './bookRoot.model';
 import User from '../user/user.model';
+
+const fs = require('fs');
 
 // import root from './book.model';
 const rootNav = (request, response) => {
@@ -88,26 +90,36 @@ const bookReport = (req, res) => {
 
 // POST '/root/bookReport'
 const bookReportPost = async (req, res) => {
+  log.info('Ingresando al reporte de libro');
   // Recupera todos los libros de la base de datos
   const books = await BookModel.find();
-  // Formatea los datos de los libros
-  let html = '<h1>Reporte de libros</h1>';
+
+  // Crea un nuevo documento PDF
+  const doc = new PDFDocument();
+
+  // Escribe en el documento PDF
+  doc.fontSize(25).text('Reporte de libros', 50, 50);
+
+  let y = 100;
   books.forEach((book) => {
-    html += `<h2>${book.title}</h2><p>${book.author}</p><p>${book.description}</p>`;
+    doc.fontSize(20).text(`Título: ${book.bookTitle}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Autor: ${book.bookAuthor}`, 50, y);
+    y += 20;
+    doc.fontSize(15).text(`Descripción: ${book.bookISBN}`, 50, y);
+    y += 30;
   });
-  // Lanza una nueva instancia de navegador
-  const browser = await puppeter.launch();
-  // Abre una nueva página en el navegador
-  const page = await browser.newPage();
-  // Configura el contenido de la página
-  await page.setContent(html);
-  // Genera el PDF
-  const pdf = await page.pdf({ format: 'A4' });
-  // Cierra el navegador
-  await browser.close();
-  // Envía el PDF como respuesta
-  res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length });
-  res.send(pdf);
+  doc.end();
+  // Guarda el documento PDF en un archivo
+  const stream = doc.pipe(fs.createWriteStream('C:\Users\lower\OneDrive\Escritorio\miReporte.pdf')); // Reemplaza esto con la ruta donde quieres guardar el PDF
+
+  stream.on('finish', () => {
+    // Finaliza el documento PDF
+    doc.end();
+    log.info('Se termina el reporte de libro');
+    // Envía el PDF como respuesta
+    res.download('C:\Users\lower\OneDrive\Escritorio\miReporte.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
+  });
 };
 
 // DELETE user con root
