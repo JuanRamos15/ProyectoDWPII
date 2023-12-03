@@ -164,7 +164,7 @@ const userReportPost = async (req, res) => {
     log.info('Se termina el reporte de libro');
     // Envía el PDF como respuesta
     // eslint-disable-next-line
-    res.download('C:\Users\lower\OneDrive\Escritorio\Usuarios-Libros.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
+    res.download('C:\Users\lower\OneDrive\Escritorio\Reporte-Usuarios.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
   });
 };
 
