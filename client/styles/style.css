@@ -10,6 +10,9 @@ a{
 h1{
   color: teal;
 }
+h4{
+  color: teal;
+}
 #brand-logo-img {
   display: flex;
   align-items: center;
@@ -78,10 +81,4 @@ h1{
 .card-action a {
   color: #007BFF;
   text-decoration: none;
-}
-
-.bookReportImage{
-  width: 130px;
-  height: 130px;
-  margin: auto;
 }

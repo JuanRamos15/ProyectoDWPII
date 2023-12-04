@@ -4,7 +4,7 @@ import log from '../config/winston';
 // creando la funcion de conexion
 export default async function connectWithRetry(mongoUrl) {
   try {
-    await mongoose.connect(mongoUrl);
+    await mongoose.connect(mongoUrl, { serverSelectionTimeoutMS: 80000 });
     log.info('✔ Conectado con mongo');
   } catch (error) {
     log.error(`😢 No se conecto con mongo 😢${error.message}`);
