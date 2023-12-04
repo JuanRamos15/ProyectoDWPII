@@ -34,6 +34,10 @@ const BookSchema = new Schema({
     type: String,
     ref: 'User',
   },
+  reservedBy: {
+    type: String,
+    ref: 'User',
+  },
   startDate: {
     type: Date,
     default: Date.now,

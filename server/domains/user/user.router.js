@@ -68,6 +68,11 @@ router.post(
 router.post('/listLoanBooks', userController.postLoan);
 // POST '/user/return
 router.post('/return', userController.postReturn);
+// POST '/user/reserveBook
+// POST '/user/reserveBook'
+router.post('/reserveBook', userController.postReserve);
+// POST Cancelar reserva
+router.post('/cancelReservation', userController.postCancelReservation);
 
 // PUT '/user/modify
 router.put(
