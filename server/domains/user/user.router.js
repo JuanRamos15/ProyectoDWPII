@@ -65,7 +65,7 @@ router.post(
 );
 
 // POST '/user/loan
-router.post('/loan', userController.postLoan);
+router.post('/listLoanBooks', userController.postLoan);
 // POST '/user/return
 router.post('/return', userController.postReturn);
 
