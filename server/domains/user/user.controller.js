@@ -371,9 +371,7 @@ const postReserve = async (req, res) => {
       });
 
       if (userHasBook) {
-        return res.send(
-          'Ya tienes una copia de este libro prestada o reservada.'
-        );
+        return res.send('Ya tienes una copia de este libro reservadado.');
       }
 
       // Busca al usuario por userId
@@ -395,8 +393,8 @@ const postReserve = async (req, res) => {
       return res.render('user/listBooks', { book });
     }
 
-    // Informa al cliente que no hay copias disponibles, el libro está prestado o reservado
-    log.info('No hay copias disponibles, el libro está prestado o reservado');
+    // Informa al cliente que no hay copias disponibles, el libro está reservado
+    log.info('No hay copias disponibles, el libro está reservado');
     return res.render('user/listBooks');
   } catch (error) {
     console.error(error);
@@ -406,49 +404,24 @@ const postReserve = async (req, res) => {
 
 // POST '/user/cancelReservation'
 const postCancelReservation = async (req, res) => {
+  // Obtén el ID del libro del request
+  const { _id } = req.body;
   try {
-    // Se obtiene el userId del usuario
-    const { userId } = req.session;
-    log.info('Se solicita cancelación de reserva');
-
-    // Obtén el ID del libro del request
-    const { id } = req.body;
-
-    // Verifica si el ID del libro no está vacío
-    if (!id) {
-      log.info('El ID del libro está vacío');
-      return res.render('user/listBooks');
-    }
-
-    // Busca el libro en la base de datos
-    const book = await BookModel.findById(id);
-
-    // Si el libro no existe, retorna
+    const book = await BookModel.findById(_id);
     if (!book) {
-      log.info('Libro no encontrado');
-      return res.render('user/listBooks');
+      return res.status(404).send({ message: 'Libro no encontrado' });
     }
 
-    // Verifica si el libro está reservado por el usuario
-    if (book.reservedBy && book.reservedBy.toString() === userId) {
-      // Elimina el campo reservedBy
-      book.reservedBy = null;
-      book.startDate = null;
+    book.reservedBy = null; // Cancela la reserva
+    await book.save();
 
-      // Guarda el libro en la base de datos
-      await book.save();
-
-      // Informa al cliente que la cancelación fue exitosa
-      log.info('La cancelación de la reserva fue exitosa');
-      return res.render('user/listBooks', { book });
-    }
-
-    // Informa al cliente que el libro no está reservado por el usuario
-    log.info('El libro no está reservado por el usuario');
-    return res.render('user/listBooks');
+    return res
+      .status(200)
+      .render('user/listBooks', { message: 'La reservacion fue cancelada' });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json(error);
+    return res
+      .status(500)
+      .send({ message: `Error al cancelar la reservacion: ${error.message}` });
   }
 };
 

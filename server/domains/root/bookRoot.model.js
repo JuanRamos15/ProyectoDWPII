@@ -7,6 +7,7 @@ import configKeys from '../../config/configKeys';
 import MailSender from '../../services/mailSender';
 // Desestructurando la funcion Schema
 const { Schema } = mongoose;
+const { Types } = mongoose;
 
 // Construcion de un Schema es un objeto vacio
 const BookSchema = new Schema({
@@ -31,7 +32,7 @@ const BookSchema = new Schema({
     required: true,
   },
   borrowedBy: {
-    type: String,
+    type: Types.ObjectId, // String
     ref: 'User',
   },
   reservedBy: {
