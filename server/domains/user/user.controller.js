@@ -74,16 +74,22 @@ const Penalties = (req, res) => {
   res.render('user/penalties');
 };
 
-// GET '/user/loan'
-const loan = (req, res) => {
-  log.info('Se entrega lista de libros prestados');
-  res.render('user/loan');
-};
-
 // GET '/user/reserveBook'
-const reserveBook = (req, res) => {
-  log.info('Se entrega lista de libros reservados');
-  res.render('user/reserveBook');
+const reserveBook = async (req, res) => {
+  try {
+    // Se obtiene el userId del usuario
+    const { userId } = req.session;
+    log.info('Se entrega lista de libros reservados');
+
+    // Busca todos los libros reservados por el usuario
+    const reservedBooks = await BookModel.find({ reservedBy: userId });
+
+    // Renderiza la vista con los libros reservados
+    res.render('user/reserveBook', { reservedBooks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener los libros reservados');
+  }
 };
 
 // GET '/user/modify'
@@ -344,6 +350,81 @@ const postModify = async (req, res) => {
   }
 };
 
+const postReserve = async (req, res) => {
+  try {
+    // Se obtiene el userId del usuario
+    const { userId } = req.session;
+    log.info('Se solicita reserva de libro');
+
+    // Obtén el ID del libro del request
+    const { id } = req.body;
+
+    // Busca el libro en la base de datos
+    const book = await BookModel.findById(id);
+
+    // Verifica si hay copias disponibles y el libro no está prestado ni reservado
+    if (book.bookQuantity > 0 && !book.borrowedBy && !book.reservedBy) {
+      // Verifica si el usuario ya tiene prestada o reservada una copia del mismo libro
+      const userHasBook = await BookModel.exists({
+        _id: id, // Busca el libro actual
+        $or: [{ borrowedBy: userId }, { reservedBy: userId }],
+      });
+
+      if (userHasBook) {
+        return res.send('Ya tienes una copia de este libro reservadado.');
+      }
+
+      // Busca al usuario por userId
+      const user = await User.findById(userId);
+
+      // Verifica si el usuario existe
+      if (!user) {
+        return res.send('Usuario no encontrado');
+      }
+
+      // Establece el campo reservedBy al userId del usuario
+      book.reservedBy = user._id;
+
+      // Guarda el libro en la base de datos
+      await book.save();
+
+      // Informa al cliente que la reserva fue exitosa
+      log.info('La reserva fue exitosa');
+      return res.render('user/listBooks', { book });
+    }
+
+    // Informa al cliente que no hay copias disponibles, el libro está reservado
+    log.info('No hay copias disponibles, el libro está reservado');
+    return res.render('user/listBooks');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
+// POST '/user/cancelReservation'
+const postCancelReservation = async (req, res) => {
+  // Obtén el ID del libro del request
+  const { _id } = req.body;
+  try {
+    const book = await BookModel.findById(_id);
+    if (!book) {
+      return res.status(404).send({ message: 'Libro no encontrado' });
+    }
+
+    book.reservedBy = null; // Cancela la reserva
+    await book.save();
+
+    return res
+      .status(200)
+      .render('user/listBooks', { message: 'La reservacion fue cancelada' });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: `Error al cancelar la reservacion: ${error.message}` });
+  }
+};
+
 // Exportar todos los metodos de acción
 export default {
   login,
@@ -354,11 +435,12 @@ export default {
   userHome,
   listBooks,
   Penalties,
-  loan,
   reserveBook,
+  postCancelReservation,
   modify,
   postLoan,
   listLoanBooks,
   postReturn,
+  postReserve,
   postModify,
 };

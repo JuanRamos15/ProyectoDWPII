@@ -33,9 +33,11 @@ router.get('/userList', rootController.userList);
 // GET 'root/userList'
 router.get('/modifyUser/:id', rootController.modifyUser);
 // GET '/root/bookReport
-router.get('/bookReport', rootController.bookReport);
+router.get('/reports', rootController.bookReport);
 // POST 'root/bookReport
-router.post('/bookReport', rootController.bookReportPost);
+router.post('/reports', rootController.bookReportPost);
+// POST '/root/userReport
+router.post('/userReport', rootController.userReportPost);
 
 // POST '/root/addBook'
 router.post(

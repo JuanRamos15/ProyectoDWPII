@@ -1,1 +1,25 @@
 {{> navbarUser}}
+<div class="row">
+  {{#each reservedBooks}}
+    <div class="col s12 m6 l4">
+      <div class="card horizontal">
+        <div class="card-stacked">
+          <div class="card-content">
+            <span class="card-title">{{this.bookTitle}}</span>
+            <p>{{this.bookAuthor}}</p>
+            <p>{{this.bookCategory}}</p>
+            <p>Fecha de Reserva: {{this.startDate}}</p>
+          </div>
+          <div class="card-action">
+            <!-- Formulario para cancelar la reserva -->
+  <form action="/user/cancelReservation" method="post">
+  <input type="hidden" name="id" value="{{this._id}}">
+  <button type="submit" class="btn">Cancelar reserva</button>
+</form>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <p>No tienes libros reservados actualmente.</p>
+  {{/each}}
