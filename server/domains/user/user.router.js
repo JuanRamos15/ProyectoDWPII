@@ -10,6 +10,9 @@ import userValidator from './user.validator';
 // Importando el factory de validación
 import ValidateFactory from '../../services/validateFactory';
 
+// Importando middleware
+import { authLocal } from '../../services/auth.services';
+
 // Creando una isntancia del enrutador
 const router = new Router();
 
@@ -61,14 +64,7 @@ router.post(
 
 // POST '/user/login'
 // Cuando el usuario hace clic en el boton de login
-router.post(
-  '/login',
-  ValidateFactory({
-    schema: userValidator.loginSchema,
-    getObject: userValidator.getLogin,
-  }),
-  userController.loginPost
-);
+router.post('/login', authLocal);
 
 // POST '/user/loan
 router.post('/listLoanBooks', userController.postLoan);
