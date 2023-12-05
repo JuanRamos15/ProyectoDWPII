@@ -18,10 +18,7 @@ router.get('/rootHome', rootController.rootNav);
 router.get('/addBook', rootController.addBook);
 // GET '/root/listBooks'
 router.get('/listBooks', rootController.listBooks);
-// GET '/root/penalties'
-router.get('/penalties', rootController.penalties);
-// GET '/root/loan'
-router.get('/loan', rootController.loan);
+
 // GET '/root/reserveBook'
 router.get('/reserveBook', rootController.reserveBook);
 // Get '/root/modifyUser'
@@ -34,10 +31,13 @@ router.get('/userList', rootController.userList);
 router.get('/modifyUser/:id', rootController.modifyUser);
 // GET '/root/bookReport
 router.get('/reports', rootController.bookReport);
+router.get('/addPenalties', rootController.addPenalty);
 // POST 'root/bookReport
 router.post('/reports', rootController.bookReportPost);
 // POST '/root/userReport
 router.post('/userReport', rootController.userReportPost);
+// POST '/root/addPenalty'
+router.post('/addPenalty', rootController.addPenalty);
 
 // POST '/root/addBook'
 router.post(

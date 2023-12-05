@@ -42,16 +42,7 @@ const listBooks = async (req, res) => {
   // Se entrega la vista dashboardView con el viewmodel projects
   res.render('root/listBooks', { books });
 };
-// Get '/root/penalties'
-const penalties = (req, res) => {
-  log.info('Se entrega la lista de libros registrados en el sistema');
-  res.render('root/Penalties');
-};
-// GET '/root/loan'
-const loan = (req, res) => {
-  log.info('Se entrega formulario de prestamo de libro');
-  res.render('root/loan');
-};
+
 // GET '/root/reserveBook'
 const reserveBook = (req, res) => {
   log.info('Se entrega formulario de reserva de libro');
@@ -128,6 +119,9 @@ const bookReportPost = async (req, res) => {
   });
 };
 
+const getPenalties = (req, res) => {
+  res.render('root/addPenalties');
+};
 // POST '/root/userReportPost
 const userReportPost = async (req, res) => {
   log.info('Ingresando al reporte de Usuarios');
@@ -378,14 +372,25 @@ const modifyUserPut = async (req, res) => {
   }
 };
 
+const penalties = [];
+const addPenalty = (req, res) => {
+  const penalty = {
+    userId: req.body.userId,
+    amount: req.body.amount,
+    reason: req.body.reason,
+  };
+
+  penalties.push(penalty);
+
+  res.redirect('/root/addPenalties');
+};
 // Exportando los metodos de accion
 export default {
   rootNav,
   addBook,
   listBooks,
-  penalties,
-  loan,
   reserveBook,
+  getPenalties,
   userList,
   modifyUser,
   modifyUserPut,
@@ -397,4 +402,5 @@ export default {
   bookReport,
   bookReportPost,
   userReportPost,
+  addPenalty,
 };
