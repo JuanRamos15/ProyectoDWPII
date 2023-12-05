@@ -108,6 +108,9 @@ UserSchema.methods = {
   comparePassword(password) {
     return bcrypt.compareSync(password, this.password);
   },
+  authenticateUser(password) {
+    return bcrypt.compareSync(password, this.password);
+  },
 };
 
 // Statics Methods
