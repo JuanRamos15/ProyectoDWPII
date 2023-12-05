@@ -8,16 +8,15 @@ import BookModel from '../root/bookRoot.model';
 
 // GET '/user/logout'
 const logout = (req, res) => {
-  // Metodo proporcionado por el middleware de sesion de express
-  // Destruye la sesion y elimina los datos de la sesion en almacenamiento
-  req.session.destroy((error) => {
-    if (error) {
-      log.error('Error al cerrar la sesion', error);
-      res.redirect('userHome');
+  // Passport incrusta la peticion el metodo logout
+  req.logout((err) => {
+    if (err) {
+      return res.json(err);
     }
-
-    log.info('Se cierra sesion');
-    res.redirect('home/logout');
+    // Creamos el mensaje flash
+    req.flash('successMessage', 'Sesión cerrada correctamente');
+    // Redireccionamos al login
+    return res.redirect('/login');
   });
 };
 
@@ -36,7 +35,10 @@ const login = (req, res) => {
 
 // GET '/user/userHome'
 const userHome = (req, res) => {
-  log.info('Se entrega home de usuario');
+  // Log de los query params
+  if (req.query.message) {
+    res.locals.successMessage = `Bienvenido a BiblioTec ${req.user.firstName}`;
+  }
   res.render('user/userHome');
 };
 

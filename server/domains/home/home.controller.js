@@ -21,8 +21,16 @@ const login = (req, res) => {
 };
 // GET '/user/logout'
 const logout = (req, res) => {
-  log.info('Se cierra sesion');
-  res.render('home/logout');
+  // Passport incrusta la peticion el metodo logout
+  req.logout((err) => {
+    if (err) {
+      return res.json(err);
+    }
+    // Creamos el mensaje flash
+    req.flash('successMessage', 'Sesión cerrada correctamente');
+    // Redireccionamos al login
+    return res.redirect('/login');
+  });
 };
 
 // POST '/user/login'

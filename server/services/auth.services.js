@@ -66,7 +66,7 @@ passport.use(localStrategy);
 // Se exporta el middleware
 export const authLocal = passport.authenticate('local', {
   // Redireccionamiento en caso de fallo
-  successRedirect: '/user/userHome',
+  successRedirect: '/user/userHome?message=loginSuccess',
   failureRedirect: '/login',
   failureFlash: true,
 });

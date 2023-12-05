@@ -70,7 +70,6 @@ router.post('/login', authLocal);
 router.post('/listLoanBooks', userController.postLoan);
 // POST '/user/return
 router.post('/return', userController.postReturn);
-// POST '/user/reserveBook
 // POST '/user/reserveBook'
 router.post('/reserveBook', userController.postReserve);
 // POST Cancelar reserva

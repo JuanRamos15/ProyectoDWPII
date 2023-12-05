@@ -97,6 +97,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Crea un server de archivos estaticos
 app.use(express.static(path.join(__dirname, '..', 'public')));
+// Guardado en las variables locales de express el usuario desenralizado
+app.use((req, res, next) => {
+  log.info('Guardando el usuario en las variables locales');
+  res.locals.user = req.user?.toJSON();
+  next();
+});
 
 // Registro de Rutas
 router.addRoutes(app);
