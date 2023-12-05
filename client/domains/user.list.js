@@ -1,6 +1,6 @@
 export default async function deleteUser(id) {
   try {
-    const url = `${window.location.protocol}//${window.location.host}/root/${id}`;
+    const url = `${window.location.protocol}//${window.location.host}/root/modifyUser/${id}`;
     console.log(url);
     const response = await fetch(url, {
       method: 'DELETE',

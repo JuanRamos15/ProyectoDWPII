@@ -1,6 +1,6 @@
 export default async function deleteBook(id) {
   try {
-    const url = `${window.location.protocol}//${window.location.host}/root/${id}`;
+    const url = `${window.location.protocol}//${window.location.host}/root/listBooks/${id}`;
     console.log(url);
     const response = await fetch(url, {
       method: 'DELETE',
