@@ -31,16 +31,12 @@ router.get('/userList', rootController.userList);
 router.get('/modifyUser/:id', rootController.modifyUser);
 // GET '/root/bookReport
 router.get('/reports', rootController.bookReport);
-// GET '/root/addPenalties
-router.get('/addPenalties', rootController.addPenalty);
 
 // Metodos POST
 // POST 'root/bookReport
 router.post('/reports', rootController.bookReportPost);
 // POST '/root/userReport
 router.post('/userReport', rootController.userReportPost);
-// POST '/root/addPenalty'
-router.post('/addPenalty', rootController.addPenalty);
 // POST '/root/addBook'
 router.post(
   '/addBook',

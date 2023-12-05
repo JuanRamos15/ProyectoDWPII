@@ -118,10 +118,6 @@ const bookReportPost = async (req, res) => {
     res.download('C:\Users\lower\OneDrive\Escritorio\Reporte-Libros.pdf'); // Reemplaza esto con la ruta donde guardaste el PDF
   });
 };
-
-const getPenalties = (req, res) => {
-  res.render('root/addPenalties');
-};
 // POST '/root/userReportPost
 const userReportPost = async (req, res) => {
   log.info('Ingresando al reporte de Usuarios');
@@ -371,26 +367,12 @@ const modifyUserPut = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
-const penalties = [];
-const addPenalty = (req, res) => {
-  const penalty = {
-    userId: req.body.userId,
-    amount: req.body.amount,
-    reason: req.body.reason,
-  };
-
-  penalties.push(penalty);
-
-  res.redirect('/root/addPenalties');
-};
 // Exportando los metodos de accion
 export default {
   rootNav,
   addBook,
   listBooks,
   reserveBook,
-  getPenalties,
   userList,
   modifyUser,
   modifyUserPut,
@@ -402,5 +384,4 @@ export default {
   bookReport,
   bookReportPost,
   userReportPost,
-  addPenalty,
 };

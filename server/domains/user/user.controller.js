@@ -106,6 +106,23 @@ const modify = async (req, res) => {
   }
 };
 
+// GET user/confirm/<token>
+const confirm = async (req, res) => {
+  // Extrayendo datos de validación
+  const { validData, errorData } = req;
+  if (errorData) return res.json(errorData);
+  const { token } = validData;
+  // Buscando si existe un usuario con ese token
+  const user = await User.findByToken(token);
+  if (!user) {
+    return res.send('USER WITH TOKEN NOT FOUND');
+  }
+  // Activate user
+  await user.activate();
+  // Retornado al usuario validado
+  return res.send(`Usuario: ${user.firstName} Validado`);
+};
+
 // POST '/user/login'
 // Ingresa el usuario a la pagina
 const loginPost = async (request, response) => {
@@ -151,9 +168,15 @@ const registerPost = async (req, res) => {
     const user = await User.create(userFormData);
     // Se guarda la informacion dentro del log.info
     log.info(`Usuario creado: ${JSON.stringify(user)}`);
+    // Se construye el viewModel del usuario
+    const viewModel = {
+      ...user.toJSON(),
+      // Color de fondo
+      backgroundColor: 'cyan darken-2',
+    };
     // Se contesta al cliente con el usuario creado
     // El status 200 y se redirige a la pagina de login
-    return res.status(200).redirect('/user/login');
+    return res.render('user/successfulRegistration', viewModel);
   } catch (error) {
     log.error(error.message);
     return res.json({
@@ -430,6 +453,7 @@ export default {
   login,
   logout,
   register,
+  confirm,
   registerPost,
   loginPost,
   userHome,
