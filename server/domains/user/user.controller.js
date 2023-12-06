@@ -80,7 +80,7 @@ const Penalties = (req, res) => {
 const reserveBook = async (req, res) => {
   try {
     // Se obtiene el userId del usuario
-    const { userId } = req.session;
+    const userId = req.user.id;
     log.info('Se entrega lista de libros reservados');
 
     // Busca todos los libros reservados por el usuario
@@ -98,7 +98,7 @@ const reserveBook = async (req, res) => {
 const modify = async (req, res) => {
   try {
     // Se encuentra al usuario en la base de datos
-    const user = await User.findById(req.session.userId).lean().exec();
+    const user = await User.findById(req.user.id).lean().exec();
     log.info('Se entrega formulario de modificación de usuario');
     // Se pasa el objeto a la vista 'user/modify' para que pueda acceder a los elementos
     // del Schema de mongoose
@@ -194,7 +194,7 @@ const registerPost = async (req, res) => {
 const postLoan = async (req, res) => {
   try {
     // Se obtiene el userId del usuario
-    const { userId } = req.session;
+    const userId = req.user.id;
     log.info('Se solicita préstamo de libro');
 
     // Obtén el ID del libro del request
@@ -256,7 +256,7 @@ const postLoan = async (req, res) => {
 const postReturn = async (req, res) => {
   try {
     // Se obtiene el userId del usuario
-    const { userId } = req.session;
+    const userId = req.user.id;
     log.info('Se solicita devolución de libro');
 
     // Obtén el ID del libro del request
@@ -304,7 +304,7 @@ const listLoanBooks = async (req, res) => {
   const { query } = req.query;
   log.info(`Buscando libros con el ISBN o título: ${query}`);
   // Obtén el userId del usuario
-  const { userId } = req.session;
+  const userId = req.user.id;
   // Consulta los libros
   let books;
   if (query) {
@@ -331,7 +331,7 @@ const listLoanBooks = async (req, res) => {
 // PUT '/user/modify'
 // Modifica los datos del usuario
 const postModify = async (req, res) => {
-  const { userId } = req.session;
+  const userId = req.user.id;
   // Rescatando la información del formulario
   const { errorData: validationError } = req;
   // En caso de haber errores
@@ -378,7 +378,7 @@ const postModify = async (req, res) => {
 const postReserve = async (req, res) => {
   try {
     // Se obtiene el userId del usuario
-    const { userId } = req.session;
+    const userId = req.user.id;
     log.info('Se solicita reserva de libro');
 
     // Obtén el ID del libro del request
