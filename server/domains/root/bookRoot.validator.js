@@ -23,8 +23,8 @@ const getBook = (req) => {
     bookQuantity,
   };
 };
-
+// Exportando el validador
 export default {
-  bookRootSchema,
-  getBook,
+  bookRootSchema, // exportando el esquema de validacion
+  getBook, // exportando el middleware de extraccion
 };

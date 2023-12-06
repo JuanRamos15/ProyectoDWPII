@@ -4,156 +4,11 @@ import log from '../../config/winston';
 import User from './user.model';
 import BookModel from '../root/bookRoot.model';
 
-// Action Methods
-
-// GET '/user/logout'
-const logout = (req, res) => {
-  // Passport incrusta la peticion el metodo logout
-  req.logout((err) => {
-    if (err) {
-      return res.json(err);
-    }
-    // Creamos el mensaje flash
-    req.flash('successMessage', 'Sesión cerrada correctamente');
-    // Redireccionamos al login
-    return res.redirect('/login');
-  });
-};
-
 // GET '/user/register'
 const register = (req, res) => {
   log.info('Se entrega formulario de registro');
   res.render('user/register');
 };
-
-// GET '/user/login'
-const login = (req, res) => {
-  // Sirve el formulario de login
-  log.info('Se entrega formulario de login');
-  res.render('user/login');
-};
-
-// GET '/user/userHome'
-const userHome = (req, res) => {
-  // Log de los query params
-  if (req.query.message) {
-    res.locals.successMessage = `Bienvenido a BiblioTec ${req.user.firstName}`;
-  }
-  res.render('user/userHome');
-};
-
-// GET '/user/listBooks'
-const listBooks = async (req, res) => {
-  log.info('Se entrega la lista de libros registrados en el sistema');
-  // Obtén la consulta del request
-  const { query } = req.query;
-  log.info(`Buscando libros con el ISBN o título: ${query}`);
-  // Consulta los libros
-  let books;
-  if (query) {
-    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
-    books = await BookModel.find({
-      $or: [
-        { bookAuthor: new RegExp(query, 'i') },
-        { bookTitle: new RegExp(query, 'i') },
-        { bookCategory: new RegExp(query, 'i') },
-      ],
-    })
-      .lean()
-      .exec();
-  } else {
-    // Si no se proporcionó ninguno, obtén todos los libros
-    books = await BookModel.find({}).lean().exec();
-  }
-  log.info(`Encontrados ${books.length} libros`);
-  // Se entrega la vista dashboardView con el viewmodel projects
-  res.render('user/listBooks', { books });
-};
-
-// GET '/user/penalties'
-const Penalties = (req, res) => {
-  log.info('Se entrega lista de multas');
-  res.render('user/penalties');
-};
-
-// GET '/user/reserveBook'
-const reserveBook = async (req, res) => {
-  try {
-    // Se obtiene el userId del usuario
-    const userId = req.user.id;
-    log.info('Se entrega lista de libros reservados');
-
-    // Busca todos los libros reservados por el usuario
-    const reservedBooks = await BookModel.find({ reservedBy: userId });
-
-    // Renderiza la vista con los libros reservados
-    res.render('user/reserveBook', { reservedBooks });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al obtener los libros reservados');
-  }
-};
-
-// GET '/user/modify'
-const modify = async (req, res) => {
-  try {
-    // Se encuentra al usuario en la base de datos
-    const user = await User.findById(req.user.id).lean().exec();
-    log.info('Se entrega formulario de modificación de usuario');
-    // Se pasa el objeto a la vista 'user/modify' para que pueda acceder a los elementos
-    // del Schema de mongoose
-    res.render('user/modify', { user });
-  } catch (err) {
-    log.error(err);
-  }
-};
-
-// GET user/confirm/<token>
-const confirm = async (req, res) => {
-  // Extrayendo datos de validación
-  const { validData, errorData } = req;
-  if (errorData) return res.json(errorData);
-  const { token } = validData;
-  // Buscando si existe un usuario con ese token
-  const user = await User.findByToken(token);
-  if (!user) {
-    return res.send('USER WITH TOKEN NOT FOUND');
-  }
-  // Activate user
-  await user.activate();
-  // Retornado al usuario validado
-  return res.send(`Usuario: ${user.firstName} Validado`);
-};
-
-// POST '/user/login'
-// Ingresa el usuario a la pagina
-const loginPost = async (request, response) => {
-  // Del formulario obten el correo y contraseña
-  const { email, password } = request.body;
-  // Intenta
-  try {
-    // Buscar el usuario en la base de datos por correo electrónico
-    const user = await User.findOne({ email });
-    // Si el usuario existe y la contraseña es correcta
-    if (user && bcrypt.compareSync(password, user.password)) {
-      // Si el correo y la contraseña son válidos, redirigir a otra página
-      log.info('Se inicia sesion como usuario');
-      // Se obtiene el id de la sesion
-      // eslint-disable-next-line no-underscore-dangle
-      request.session.userId = user._id;
-      // Se redirige a la pagina de inicio de usuario
-      response.redirect('userHome');
-    } else {
-      // Si el correo o la contraseña son incorrectos
-      log.info('Correo o contraseña incorrectos');
-      response.redirect('login');
-    }
-  } catch (error) {
-    // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
-    console.error(error);
-  }
-};
-
 // POST '/user/register'
 // Se registra el usuario en la base de datos
 const registerPost = async (req, res) => {
@@ -188,7 +43,104 @@ const registerPost = async (req, res) => {
     });
   }
 };
-
+// GET user/confirm/<token>
+const confirm = async (req, res) => {
+  // Extrayendo datos de validación
+  const { validData, errorData } = req;
+  if (errorData) return res.json(errorData);
+  const { token } = validData;
+  // Buscando si existe un usuario con ese token
+  const user = await User.findByToken(token);
+  if (!user) {
+    return res.send('USER WITH TOKEN NOT FOUND');
+  }
+  // Activate user
+  await user.activate();
+  // Retornado al usuario validado
+  return res.send(`Usuario: ${user.firstName} Validado`);
+};
+// GET '/user/login'
+const login = (req, res) => {
+  // Sirve el formulario de login
+  log.info('Se entrega formulario de login');
+  res.render('user/login');
+};
+// POST '/user/login'
+// Ingresa el usuario a la pagina
+const loginPost = async (request, response) => {
+  // Del formulario obten el correo y contraseña
+  const { email, password } = request.body;
+  // Intenta
+  try {
+    // Buscar el usuario en la base de datos por correo electrónico
+    const user = await User.findOne({ email });
+    // Si el usuario existe y la contraseña es correcta
+    if (user && bcrypt.compareSync(password, user.password)) {
+      // Si el correo y la contraseña son válidos, redirigir a otra página
+      log.info('Se inicia sesion como usuario');
+      // Se obtiene el id de la sesion
+      // eslint-disable-next-line no-underscore-dangle
+      request.session.userId = user._id;
+      // Se redirige a la pagina de inicio de usuario
+      response.redirect('userHome');
+    } else {
+      // Si el correo o la contraseña son incorrectos
+      log.info('Correo o contraseña incorrectos');
+      response.redirect('login');
+    }
+  } catch (error) {
+    // Manejar cualquier error que ocurra durante la búsqueda en la base de datos
+    console.error(error);
+  }
+};
+// GET '/user/userHome'
+const userHome = (req, res) => {
+  // Log de los query params
+  if (req.query.message) {
+    res.locals.successMessage = `Bienvenido a BiblioTec ${req.user.firstName}`;
+  }
+  res.render('user/userHome');
+};
+// GET '/user/logout'
+const logout = (req, res) => {
+  // Passport incrusta la peticion el metodo logout
+  req.logout((err) => {
+    if (err) {
+      return res.json(err);
+    }
+    // Creamos el mensaje flash
+    req.flash('successMessage', 'Sesión cerrada correctamente');
+    // Redireccionamos al login
+    return res.redirect('/login');
+  });
+};
+// GET '/user/listBooks'
+const listBooks = async (req, res) => {
+  log.info('Se entrega la lista de libros registrados en el sistema');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el ISBN o título: ${query}`);
+  // Consulta los libros
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({}).lean().exec();
+  }
+  log.info(`Encontrados ${books.length} libros`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('user/listBooks', { books });
+};
 // Prestamo de libro
 // POST '/user/loan'
 const postLoan = async (req, res) => {
@@ -250,7 +202,36 @@ const postLoan = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
+// GET '/root/listBooks'
+const listLoanBooks = async (req, res) => {
+  log.info('Se entrega la lista de libros prestados');
+  // Obtén la consulta del request
+  const { query } = req.query;
+  log.info(`Buscando libros con el ISBN o título: ${query}`);
+  // Obtén el userId del usuario
+  const userId = req.user.id;
+  // Consulta los libros
+  let books;
+  if (query) {
+    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
+    books = await BookModel.find({
+      $or: [
+        { bookAuthor: new RegExp(query, 'i') },
+        { bookTitle: new RegExp(query, 'i') },
+        { bookCategory: new RegExp(query, 'i') },
+      ],
+      borrowedBy: userId, // Solo busca libros prestados por el usuario actual
+    })
+      .lean()
+      .exec();
+  } else {
+    // Si no se proporcionó ninguno, obtén todos los libros
+    books = await BookModel.find({ borrowedBy: userId }).lean().exec(); // Solo busca libros prestados por el usuario actual
+  }
+  log.info(`Encontrados ${books.length} libros`);
+  // Se entrega la vista dashboardView con el viewmodel projects
+  res.render('user/listLoanBooks', { books });
+};
 // Devolución de libro
 // POST '/user/return'
 const postReturn = async (req, res) => {
@@ -296,38 +277,19 @@ const postReturn = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
-// GET '/root/listBooks'
-const listLoanBooks = async (req, res) => {
-  log.info('Se entrega la lista de libros prestados');
-  // Obtén la consulta del request
-  const { query } = req.query;
-  log.info(`Buscando libros con el ISBN o título: ${query}`);
-  // Obtén el userId del usuario
-  const userId = req.user.id;
-  // Consulta los libros
-  let books;
-  if (query) {
-    // Si se proporcionó una consulta, busca libros que coincidan con ese ISBN o título
-    books = await BookModel.find({
-      $or: [
-        { bookAuthor: new RegExp(query, 'i') },
-        { bookTitle: new RegExp(query, 'i') },
-        { bookCategory: new RegExp(query, 'i') },
-      ],
-      borrowedBy: userId, // Solo busca libros prestados por el usuario actual
-    })
-      .lean()
-      .exec();
-  } else {
-    // Si no se proporcionó ninguno, obtén todos los libros
-    books = await BookModel.find({ borrowedBy: userId }).lean().exec(); // Solo busca libros prestados por el usuario actual
+// GET '/user/edit user'
+const modify = async (req, res) => {
+  try {
+    // Se encuentra al usuario en la base de datos
+    const user = await User.findById(req.user.id).lean().exec();
+    log.info('Se entrega formulario de modificación de usuario');
+    // Se pasa el objeto a la vista 'user/modify' para que pueda acceder a los elementos
+    // del Schema de mongoose
+    res.render('user/modify', { user });
+  } catch (err) {
+    log.error(err);
   }
-  log.info(`Encontrados ${books.length} libros`);
-  // Se entrega la vista dashboardView con el viewmodel projects
-  res.render('user/listLoanBooks', { books });
 };
-
 // PUT '/user/modify'
 // Modifica los datos del usuario
 const postModify = async (req, res) => {
@@ -372,6 +334,29 @@ const postModify = async (req, res) => {
   } catch (error) {
     log.error(`Error al actualizar el usuario con ID: ${userId}`);
     return res.status(500).json(error);
+  }
+};
+
+// GET '/user/penalties'
+const Penalties = (req, res) => {
+  log.info('Se entrega lista de multas');
+  res.render('user/penalties');
+};
+// GET '/user/reserveBook'
+const reserveBook = async (req, res) => {
+  try {
+    // Se obtiene el userId del usuario
+    const userId = req.user.id;
+    log.info('Se entrega lista de libros reservados');
+
+    // Busca todos los libros reservados por el usuario
+    const reservedBooks = await BookModel.find({ reservedBy: userId });
+
+    // Renderiza la vista con los libros reservados
+    res.render('user/reserveBook', { reservedBooks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener los libros reservados');
   }
 };
 

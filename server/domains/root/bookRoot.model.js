@@ -1,14 +1,17 @@
 /* eslint-disable consistent-return */
+// importando librerias
 // Importando mongoose
 import mongoose from 'mongoose';
-
+// Importando validador
 import log from '../../config/winston';
+// Importando configKeys
 import configKeys from '../../config/configKeys';
+// Importando MailSender
 import MailSender from '../../services/mailSender';
 // Desestructurando la funcion Schema
 const { Schema } = mongoose;
+// Creando el esquema
 const { Types } = mongoose;
-
 // Construcion de un Schema es un objeto vacio
 const BookSchema = new Schema({
   bookTitle: {
@@ -35,6 +38,10 @@ const BookSchema = new Schema({
     type: Types.ObjectId, // String
     ref: 'User',
   },
+  returnedBy: {
+    type: Types.ObjectId, // String
+    ref: 'User',
+  },
   reservedBy: {
     type: String,
     ref: 'User',
@@ -53,7 +60,7 @@ const BookSchema = new Schema({
     },
   },
 });
-
+// Creando el envio de correo
 BookSchema.post('save', async function sendLoanMail() {
   // Solo envía el correo si el libro ha sido prestado
   if (!this.borrowedBy) {
@@ -113,7 +120,7 @@ BookSchema.post('save', async function sendLoanMail() {
     return null;
   }
 });
-
+// Creando el envio de correo
 BookSchema.post('save', async function sendReturnMail() {
   // Solo envía el correo si el libro ha sido devuelto
   if (this.borrowedBy || this.bookQuantity === 0) {

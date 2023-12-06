@@ -19,7 +19,6 @@ const signUpSchema = Yup.object().shape({
 const tokenSchema = Yup.object().shape({
   token: Yup.string().length(64).required(),
 });
-
 // Middleware de extracción para token de confirmación
 const getToken = (req) => {
   // Desestructuramos la informacion
@@ -29,12 +28,11 @@ const getToken = (req) => {
     token,
   };
 };
-
+// Exportar el validador
 const token = {
   schema: tokenSchema,
   getObject: getToken,
 };
-
 // Middleware de extracción
 const getSignUp = (req) => {
   // Desestructuramos la informacion
@@ -50,7 +48,6 @@ const getSignUp = (req) => {
     cpassword,
   };
 };
-
 // Modify Schema
 const modifySchema = Yup.object().shape({
   firstName: Yup.string().required('Se requiere ingresar nombre'),
@@ -59,7 +56,6 @@ const modifySchema = Yup.object().shape({
   major: Yup.string().required('Se requiere ingresar carrera'),
   mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
 });
-
 // Middleware de extracción
 const getModify = (req) => {
   // Desestructuramos la informacion
@@ -72,7 +68,6 @@ const getModify = (req) => {
     mail,
   };
 };
-
 // Login schema
 const loginSchema = Yup.object().shape({
   mail: Yup.string().email().required('Se requiere ingresar un correo valido'),
@@ -80,7 +75,6 @@ const loginSchema = Yup.object().shape({
     .min(6)
     .required('Se requiere ingresar password de al menos 6 caracteres'),
 });
-
 // Middleware de extracción
 const getLogin = (req) => {
   // Desestructuramos la informacion
@@ -90,7 +84,7 @@ const getLogin = (req) => {
     password,
   };
 };
-
+// Exportar el validador
 export default {
   signUpSchema,
   getSignUp,

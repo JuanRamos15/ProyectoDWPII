@@ -1,12 +1,19 @@
-// 1. Importando Mongoose
+// 1. Importando librerías
+// importando mongoose
 import mongoose from 'mongoose';
+// importando validador
 import validator from 'validator';
+// importando crypto
 import crypto from 'crypto';
+// importando bcrypt
 import bcrypt from 'bcrypt';
+// importando unique validator
 import uniqueValidator from 'mongoose-unique-validator';
-
+// importando Winston
 import log from '../../config/winston';
+// importando configKeys
 import configKeys from '../../config/configKeys';
+// importando MailSender
 import MailSender from '../../services/mailSender';
 
 // 2. Desestructurando la fn Schema
@@ -130,7 +137,7 @@ UserSchema.pre('save', function presave(next) {
   this.emailConfirmationToken = this.generateConfirmationToken();
   return next();
 });
-
+// Enviando correo de confirmación
 UserSchema.post('save', async function sendConfirmationMail() {
   // Creating Mail options
   const options = {
