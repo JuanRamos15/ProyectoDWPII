@@ -7,6 +7,8 @@ import homeRouter from './domains/home/home.router';
 import userRouter from './domains/user/user.router';
 import projectsRouter from './domains/projects/project.router';
 import rootRouter from './domains/root/root.router'; // Importando enrutador root
+// Importando el factory de autorizacion
+import AuthFactory from './services/authorizationFactory';
 // Función que agrega rutas
 const addRoutes = (app) => {
   // Agregando enrutado de Home
@@ -15,6 +17,12 @@ const addRoutes = (app) => {
   app.use('/user', userRouter);
   app.use('/project', projectsRouter);
   app.use('/root', rootRouter); // Agregando enrutado de root
+
+  app.use(
+    '/user', // Autorizando ruta solo con usuarios logueados
+    AuthFactory('user'),
+    userRouter
+  );
 
   // ERRORES
   // catch 404 and forward to error handler
