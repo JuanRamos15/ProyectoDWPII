@@ -10,9 +10,6 @@ a{
 h1{
   color: teal;
 }
-h4{
-  color: teal;
-}
 #brand-logo-img {
   display: flex;
   align-items: center;
@@ -81,4 +78,31 @@ h4{
 .card-action a {
   color: #007BFF;
   text-decoration: none;
+}
+
+.textLogin{
+  font-size: 35px;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.textUserHome{
+  font-size: 20px;
+}
+
+.textRootHome{
+  font-size: 20px;
+}
+
+.listBookTitle, .listBookSubtitle{
+  display: grid;
+  place-content: center;
+}
+
+.bookReportImage, .userReportImage{
+  height: 300px;
+  margin: auto;
+  display: grid;
+  place-content: center;
+  padding-bottom: 25px;
+  border-radius: 50px;
 }

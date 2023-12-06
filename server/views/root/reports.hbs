@@ -1,8 +1,11 @@
 {{> navbarRoot}}
-
+<h1 class="listBookTitle">Reportes</h1>
+<h4 class="listBookSubtitle">Debajo puedes encontrar un boton para descargar una lista de tus libros y usuarios
+  actuales
+</h4>
 <div style="margin-top: 50px;">
   <form action="/root/reports" method="post">
-    <img style="width: 200px; height: 200px; margin: auto;" class="bookReportImage" src="/images/bookReportImage.jpg" alt="Imagen de reporte de libros">
+    <img class="bookReportImage" src="/images/bookReportImage.jpg" alt="Imagen de reporte de libros">
     <button class="waves-effect waves-light btn" style="display: block; margin: 0 auto; font-size: 20px;">
       <i class="material-icons left">cloud_download</i>
       Descargar reporte de libros
@@ -12,7 +15,7 @@
 
 <div style="margin-top: 50px;">
   <form action="/root/userReport" method="post">
-    <img style="width: 200px; height: 200px; margin: auto;" class="bookReportImage" src="/images/userReportImage.png" alt="Imagen de reporte de usuarios">
+    <img style="width: 200px; height: 200px; margin: auto;" class="bookReportImage" src="/images/userReportImage.jpg" alt="Imagen de reporte de usuarios">
     <button class="waves-effect waves-light btn" style="display: block; margin: 0 auto; font-size: 20px;">
       <i class="material-icons left">person</i>
       Descargar reporte de usuarios
